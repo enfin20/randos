@@ -16,6 +16,7 @@
   let map;
   let roadbook = [];
   let parcours = [];
+
   onMount(async () => {
     loadTables();
   });
@@ -35,6 +36,9 @@
     let debutParcours = 100000000;
     let finParcours = 0;
     let currentDay = 1;
+    let zeroDayLat = 0;
+    let zeroDayLng = 0;
+    let k = 0;
 
     let res = await fetch("/MDB/roadbook?sort=1&map=ok");
     const roa = await res.json();
@@ -233,6 +237,8 @@
             roadbook[i].summary +
             "</p>"
         );
+
+        // on détermine si il s'agit d'un zero day
         if (
           Number(roadbook[i].finParcoursLat) +
             Number(roadbook[i].finParcoursLng) !=
@@ -294,18 +300,26 @@
               .bindPopup(popupText[i])
           );
         } else {
+          // zero day, on affiche le jour précédent en plus
+
+          k = i;
+          console.info("k", k);
+          do {
+            k--;
+          } while (
+            Number(roadbook[k].finParcoursLat) +
+              Number(roadbook[k].finParcoursLng) ===
+            0
+          );
+          console.info("k2", k);
+          zeroDayLat = roadbook[k].finParcoursLat;
+          zeroDayLng = roadbook[k].finParcoursLng;
           markers.push(
             leaflet
-              .marker(
-                [
-                  Number(roadbook[i - 1].finParcoursLat),
-                  Number(roadbook[i - 1].finParcoursLng),
-                ],
-                {
-                  title: "Arrivée jour " + roadbook[i].dayCounter,
-                  icon: typeIcons[3],
-                }
-              )
+              .marker([Number(zeroDayLat), Number(zeroDayLng)], {
+                title: "Arrivée jour " + roadbook[i].dayCounter,
+                icon: typeIcons[3],
+              })
               .bindPopup(
                 popupText[i - 1] +
                   "<p><b>Jour " +

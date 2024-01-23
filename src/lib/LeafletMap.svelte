@@ -53,7 +53,7 @@
     }
     console.info("roadbook", debutParcours, finParcours);
     // pour réduire le nombre de points à récupérer dans la base
-    let freq = Math.round(Math.max((finParcours - debutParcours) / 2000, 1), 0);
+    let freq = Math.round(Math.max((finParcours - debutParcours) / 5000, 1), 0);
     res = await fetch(
       "/MDB/parcours?freq=" +
         freq +
@@ -112,15 +112,21 @@
         );
 
       for (var i = 0; i < parcours.length; i++) {
+        // tracé des lignes jour par jour
         if (parcours[i].dayCounter === currentDay) {
           latlngs.push([parcours[i].lat, parcours[i].lng]);
         } else {
+          // nouveau jour, on trace le parcours du jour précédent
+          // on ajoute la fin d'étape
           leaflet.polyline(latlngs, { color: "blue" }).addTo(map);
+          // on réinitialise le parcours
           latlngs = [];
+          latlngs.push([parcours[i - 1].lat, parcours[i - 1].lng]);
           currentDay++;
         }
       }
       leaflet.polyline(latlngs, { color: "blue" }).addTo(map);
+
       leaflet
         .tileLayer("https://a.tile.opentopomap.org/{z}/{x}/{y}.png", {
           attribution:
@@ -300,10 +306,8 @@
               .bindPopup(popupText[i])
           );
         } else {
-          // zero day, on affiche le jour précédent en plus
-
+          // zero day, on affiche le(s) jour(s) précédant(s) en plus
           k = i;
-          console.info("k", k);
           do {
             k--;
           } while (
@@ -311,7 +315,6 @@
               Number(roadbook[k].finParcoursLng) ===
             0
           );
-          console.info("k2", k);
           zeroDayLat = roadbook[k].finParcoursLat;
           zeroDayLng = roadbook[k].finParcoursLng;
           markers.push(

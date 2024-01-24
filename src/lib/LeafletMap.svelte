@@ -16,8 +16,14 @@
   let map;
   let roadbook = [];
   let parcours = [];
+  let randos = [];
+  let currentRando = "";
 
   onMount(async () => {
+    let res = await fetch("/MDB/randos");
+    const ran = await res.json();
+    randos = await ran.randos;
+    currentRando = randos[0].rando;
     loadTables();
   });
 
@@ -36,10 +42,11 @@
     let debutParcours = 100000000;
     let finParcours = 0;
     let currentDay = 1;
-
-    let res = await fetch("/MDB/roadbook?sort=1&map=ok");
+    console.info("currentRando", currentRando);
+    let res = await fetch("/MDB/roadbook?sort=1&map=ok&rando=" + currentRando);
     const roa = await res.json();
     roadbook = await roa.roadbook;
+
     for (var i = 0; i < roadbook.length; i++) {
       if (roadbook[i].debutParcours <= debutParcours) {
         debutParcours = roadbook[i].debutParcours;
@@ -78,7 +85,9 @@
         "&debutParcours=" +
         debutParcours +
         "&finParcours=" +
-        finParcours
+        finParcours +
+        "&rando=" +
+        currentRando
     );
     const par = await res.json();
     parcours = await par.parcours;
@@ -370,42 +379,20 @@
   }
 </script>
 
-<nav>
-  <div class="grid grid-cols-4 text-xs md:text-base bg-slate-600 ">
-    <div>
-      <a
-        href="/"
-        class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
-      >
-        PCT</a
-      >
-    </div>
-    <div>
-      <a
-        href="/roadbook"
-        class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
-      >
-        GR5
-      </a>
-    </div>
-    <div>
-      <a
-        href="/parcours"
-        class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
-      >
-        GR10
-      </a>
-    </div>
-    <div>
-      <a
-        href="/map"
-        class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
-      >
-        St Guilhem
-      </a>
-    </div>
-  </div>
-</nav>
+<div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+  <select
+    bind:value={currentRando}
+    on:change={loadTables}
+    class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+  >
+    {#each randos as r}
+      <option value={r.rando}>
+        {r.description}
+      </option>
+    {/each}
+  </select>
+</div>
+
 <div bind:this={mapElement} id="map" class="w-full" />
 
 <style>

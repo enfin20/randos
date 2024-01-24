@@ -1,5 +1,5 @@
 <nav>
-  <div class="grid grid-cols-4 text-xs md:text-base bg-ht px-2 py-2 ">
+  <div class="grid grid-cols-3 text-xs md:text-base bg-ht px-2 py-2 ">
     <div>
       <a
         href="/"
@@ -10,26 +10,19 @@
     </div>
     <div>
       <a
-        href="/roadbook"
-        class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
-      >
-        Roadbook
-      </a>
-    </div>
-    <div>
-      <a
         href="/parcours"
         class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
       >
         Parcours
       </a>
     </div>
+
     <div>
       <a
-        href="/map"
+        href="/roadbook"
         class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
       >
-        Cartes
+        Roadbook
       </a>
     </div>
   </div>

@@ -5,10 +5,12 @@ export async function get(request) {
   try {
     const s = request.query.get("sort") || 1;
     const map = request.query.get("map") || ""
-    var filter =new Object()
+    const rando = request.query.get("rando") 
+    var filter = new Object()
+    // spécifique pour permettre l'affichage de la carte quand le parcours n'est pas terminé
     if (map === "ok") {
-      filter = {cumul:{$gt:0}}
-    }else{filter = {}}
+      filter = {cumul:{$gt:0}, rando:rando}
+    }else{filter = {rando:rando}}
     var sort = new Object();
     sort = {day: Number(s)};
     const dbConnection = await connectToDatabase();

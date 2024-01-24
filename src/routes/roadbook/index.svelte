@@ -65,7 +65,7 @@
 
   onMount(async (promise) => {
     let res = [];
-    res = await fetch("/MDB/roadbook");
+    res = await fetch("/MDB/roadbook?rando=" + currentRando);
     const roa = await res.json();
     roadbook = await roa.roadbook;
     let lastDay = 0;
@@ -149,7 +149,9 @@
   }
 
   export async function loadDay(dayCounter) {
-    let res = await fetch("/MDB/roadbook/day?dayCounter=" + dayCounter);
+    let res = await fetch(
+      "/MDB/roadbook/day?dayCounter=" + dayCounter + "&rando=" + currentRando
+    );
     const rday = await res.json();
     editDay = await rday.r_day;
     editDay.key = editDay.dayCounter;

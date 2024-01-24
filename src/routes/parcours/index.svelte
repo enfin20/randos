@@ -29,15 +29,21 @@
   var chartParcoursData = [];
   let debutParcours = 100000000;
   let finParcours = 0;
+  let randos = [];
+  let currentRando = "";
 
   onMount(async (promise) => {
+    let res = await fetch("/MDB/randos");
+    const ran = await res.json();
+    randos = await ran.randos;
+    currentRando = randos[0].rando;
     loadTables();
     ctxParcours = chartParcours.getContext("2d");
     chartParcoursData = new chartjs(ctxParcours, {});
   });
 
   export async function loadTables() {
-    let res = await fetch("/MDB/roadbook?sort=1&map=ok");
+    let res = await fetch("/MDB/roadbook?sort=1&map=ok&rando=" + currentRando);
     const roa = await res.json();
     roadbook = await roa.roadbook;
 
@@ -99,7 +105,9 @@
         "&debutParcours=" +
         debutParcours +
         "&finParcours=" +
-        finParcours
+        finParcours +
+        "&rando=" +
+        currentRando
     );
     const par = await res.json();
     parcours = await par.parcours;
@@ -201,6 +209,19 @@
 </script>
 
 <div class="w-full">
+  <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+    <select
+      bind:value={currentRando}
+      on:change={loadTables}
+      class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+    >
+      {#each randos as r}
+        <option value={r.rando}>
+          {r.description}
+        </option>
+      {/each}
+    </select>
+  </div>
   <div class="w-full grid grid-cols-1 md:grid-cols-6 mt-5 md:mt-10">
     <select
       bind:value={debutParcours}

@@ -36,9 +36,6 @@
     let debutParcours = 100000000;
     let finParcours = 0;
     let currentDay = 1;
-    let zeroDayLat = 0;
-    let zeroDayLng = 0;
-    let k = 0;
 
     let res = await fetch("/MDB/roadbook?sort=1&map=ok");
     const roa = await res.json();
@@ -50,8 +47,29 @@
       if (roadbook[i].finParcours >= finParcours) {
         finParcours = roadbook[i].finParcours;
       }
+      // gestion des zero days sans balise
+      // on affecte la balise du jour précédent de fin de parcours
+      if (
+        Number(roadbook[i].finParcoursLat) +
+          Number(roadbook[i].finParcoursLng) ===
+        0
+      ) {
+        for (var j = i - 1; j >= 0; j--) {
+          if (
+            Number(roadbook[j].finParcoursLat) +
+              Number(roadbook[j].finParcoursLng) !=
+            0
+          ) {
+            roadbook[i].debutParcoursLat = Number(roadbook[j].finParcoursLat);
+            roadbook[i].debutParcoursLng = Number(roadbook[j].finParcoursLng);
+            roadbook[i].finParcoursLat = Number(roadbook[j].finParcoursLat);
+            roadbook[i].finParcoursLng = Number(roadbook[j].finParcoursLng);
+            j = -1;
+          }
+        }
+      }
     }
-    console.info("roadbook", debutParcours, finParcours);
+
     // pour réduire le nombre de points à récupérer dans la base
     let freq = Math.round(Math.max((finParcours - debutParcours) / 5000, 1), 0);
     res = await fetch(
@@ -245,11 +263,7 @@
         );
 
         // on détermine si il s'agit d'un zero day
-        if (
-          Number(roadbook[i].finParcoursLat) +
-            Number(roadbook[i].finParcoursLng) !=
-          0
-        ) {
+        if (roadbook[i].difficulty > 0) {
           if (
             roadbook[i].night === 0 ||
             roadbook[i].night === 1 ||
@@ -307,22 +321,18 @@
           );
         } else {
           // zero day, on affiche le(s) jour(s) précédant(s) en plus
-          k = i;
-          do {
-            k--;
-          } while (
-            Number(roadbook[k].finParcoursLat) +
-              Number(roadbook[k].finParcoursLng) ===
-            0
-          );
-          zeroDayLat = roadbook[k].finParcoursLat;
-          zeroDayLng = roadbook[k].finParcoursLng;
           markers.push(
             leaflet
-              .marker([Number(zeroDayLat), Number(zeroDayLng)], {
-                title: "Arrivée jour " + roadbook[i].dayCounter,
-                icon: typeIcons[3],
-              })
+              .marker(
+                [
+                  Number(roadbook[i].finParcoursLat),
+                  Number(roadbook[i].finParcoursLng),
+                ],
+                {
+                  title: "Arrivée jour " + roadbook[i].dayCounter,
+                  icon: typeIcons[3],
+                }
+              )
               .bindPopup(
                 popupText[i - 1] +
                   "<p><b>Jour " +
@@ -360,7 +370,43 @@
   }
 </script>
 
-<div bind:this={mapElement} id="map" />
+<nav>
+  <div class="grid grid-cols-4 text-xs md:text-base bg-slate-600 ">
+    <div>
+      <a
+        href="/"
+        class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
+      >
+        PCT</a
+      >
+    </div>
+    <div>
+      <a
+        href="/roadbook"
+        class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
+      >
+        GR5
+      </a>
+    </div>
+    <div>
+      <a
+        href="/parcours"
+        class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
+      >
+        GR10
+      </a>
+    </div>
+    <div>
+      <a
+        href="/map"
+        class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
+      >
+        St Guilhem
+      </a>
+    </div>
+  </div>
+</nav>
+<div bind:this={mapElement} id="map" class="w-full" />
 
 <style>
   @import "leaflet/dist/leaflet.css";

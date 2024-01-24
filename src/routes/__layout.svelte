@@ -34,8 +34,8 @@
     </div>
   </div>
 </nav>
-<div class="px-2 py-2 w-full">
-  <div class="flex mb-2 text-gray-500 font-bold">
+<div class="px-2 py-2">
+  <div class="mb-2 text-gray-500 font-bold">
     <slot />
   </div>
 </div>

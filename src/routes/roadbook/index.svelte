@@ -200,7 +200,7 @@
         editDay.rando = roadbook[i].rando;
         editDay.stepsAnne = roadbook[i].stepsAnne;
         editDay.stepsOlivier = roadbook[i].stepsOlivier;
-        editDay.rupture = roadbook[i.rupture];
+        editDay.rupture = roadbook[i].rupture || false;
       }
     }
 
@@ -214,6 +214,7 @@
   export async function insertRoadbook() {
     let new_id = "";
     var res = new Object();
+    delete editDay.rupture;
     editDay.day = editDay.day
       .substring(0, 4)
       .concat(editDay.day.substring(5, 7))
@@ -254,11 +255,15 @@
       // Insertion du nouveau day dans roadbook en première place
       roadbook.unshift({
         day: editDay.day,
+        start: editDay.start,
+        end: editDay.end,
         weather: editDay.weather,
         difficulty: editDay.difficulty,
         night: editDay.night,
         landscape: editDay.landscape,
         mood: editDay.mood,
+        detail: editDay.detail,
+        summary: editDay.summary,
         dayCounter: editDay.dayCounter,
         cumul: editDay.cumul,
         debutParcours: editDay.debutParcours,
@@ -273,6 +278,7 @@
         stepsAnne: editDay.stepsAnne,
         stepsOlivier: editDay.stepsOlivier,
         rupture: editDay.rupture,
+        rando: editDay.rando,
       });
       roadbook = roadbook;
     } else {
@@ -383,6 +389,8 @@
             prev_ele = editParcours.ele;
             editParcours.dist = 0;
             editDay.rupture = false;
+            dayElePos = editDay.elePos;
+            dayEleNeg = editDay.eleNeg;
           } else {
             editParcours.dist =
               Math.round(
@@ -406,6 +414,7 @@
             editParcours.eleNeg = Math.round(editParcours.ele - prev_ele);
             editParcours.elePos = 0;
           }
+
           dayDist += editParcours.dist;
           editParcours.pos = pos;
           dayElePos += editParcours.elePos;

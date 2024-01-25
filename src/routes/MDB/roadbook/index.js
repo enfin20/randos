@@ -21,7 +21,6 @@ export async function get(request) {
       if (roadbook[i].dayCounter === undefined) {
         roadbook[i].dayCounter = i+1
       }
-      roadbook[i].key = roadbook[i].dayCounter ;
     }
     return {
       status: 200,

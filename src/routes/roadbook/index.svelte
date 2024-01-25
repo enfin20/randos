@@ -1,38 +1,14 @@
 <script>
   import { onMount } from "svelte";
-  import { object_without_properties } from "svelte/internal";
-  const currentRando = "PCT";
+
+  let currentRando = "";
+  let randos = [];
   let roadbook = [];
   let parcours = [];
   var buttonLabel = "Add";
   var editDay = Object();
-  editDay.key = "";
-  editDay.day = new Date().toJSON().slice(0, 10);
+  let rupture = false;
 
-  editDay.start = "";
-  editDay.rando = currentRando;
-  editDay.end = "";
-  editDay.weather = -1;
-  editDay.difficulty = -1;
-  editDay.night = -1;
-  editDay.landscape = -1;
-  editDay.mood = -1;
-  editDay.detail = "";
-  editDay.summary = "";
-  editDay.dayCounter = 1;
-  editDay.cumul = 0;
-  editDay.debutParcours = 1;
-  editDay.debutParcoursLat = 0;
-  editDay.debutParcoursLng = 0;
-  editDay.finParcours = 0;
-  editDay.finParcoursLat = 0;
-  editDay.finParcoursLng = 0;
-  editDay.dist = 0;
-  editDay.elePos = 0;
-  editDay.eleNeg = 0;
-  editDay.stepsAnne = 0;
-  editDay.stepsOlivier = 0;
-  console.info("editDay", editDay);
   let weatherIcon = [
     "Snow",
     "Rain",
@@ -64,10 +40,24 @@
   // _in rgb(200,225,200)
 
   onMount(async (promise) => {
-    let res = [];
-    res = await fetch("/MDB/roadbook?rando=" + currentRando);
+    let res = await fetch("/MDB/randos");
+    const ran = await res.json();
+    randos = await ran.randos;
+    currentRando = randos[1].rando;
+    console.info("randos", randos);
+    loadTables();
+  });
+
+  async function loadTables() {
+    let res = await fetch("/MDB/roadbook?rando=" + currentRando);
     const roa = await res.json();
     roadbook = await roa.roadbook;
+
+    // roadbook vide
+    initEditDay();
+  }
+
+  function initEditDay() {
     let lastDay = 0;
     let dayId = -1;
     for (var i = 0; i < roadbook.length; i++) {
@@ -83,8 +73,38 @@
       editDay.finParcours = editDay.debutParcours;
       editDay.dayCounter = roadbook[dayId].dayCounter + 1;
       editDay.cumul = roadbook[dayId].cumul || 0;
+      editDay.rando = roadbook[dayId].rando;
+    } else {
+      editDay.start = "";
+      editDay.debutParcours = 1;
+      editDay.finParcours = 0;
+      editDay.dayCounter = 1;
+      editDay.cumul = 0;
+      editDay.rando = currentRando;
     }
-  });
+    editDay.day = new Date().toJSON().slice(0, 10);
+    editDay.end = "";
+    editDay.weather = -1;
+    editDay.difficulty = -1;
+    editDay.night = -1;
+    editDay.landscape = -1;
+    editDay.mood = -1;
+    editDay.detail = "";
+    editDay.summary = "";
+    editDay.debutParcoursLat = 0;
+    editDay.debutParcoursLng = 0;
+    editDay.dist = 0;
+    editDay.elePos = 0;
+    editDay.eleNeg = 0;
+    editDay.finParcoursLat = 0;
+    editDay.finParcoursLng = 0;
+    editDay.stepsAnne = 0;
+    editDay.stepsOlivier = 0;
+    editDay.rupture = false;
+
+    parcours = [];
+    buttonLabel = "Add";
+  }
 
   function updateIcons() {
     //mise à jour des icones
@@ -149,34 +169,40 @@
   }
 
   export async function loadDay(dayCounter) {
-    let res = await fetch(
-      "/MDB/roadbook/day?dayCounter=" + dayCounter + "&rando=" + currentRando
-    );
-    const rday = await res.json();
-    editDay = await rday.r_day;
-    editDay.key = editDay.dayCounter;
-    editDay.rando = editDay.rando || currentRando;
-
     for (var i = 0; i < roadbook.length; i++) {
-      if (Number(roadbook[i].dayCounter) === dayCounter - 1) {
-        editDay.debutParcours = roadbook[i].finParcours || 1;
-        editDay.finParcours = roadbook[i].finParcours || 1;
-        editDay.dist = 0;
-        editDay.eleNeg = 0;
-        editDay.elePos = 0;
-        editDay.debutParcoursLat = 0;
-        editDay.debutParcoursLng = 0;
-        editDay.finParcoursLat = 0;
-        editDay.finParcoursLng = 0;
-        editDay.cumul = roadbook[i].cumul || 0;
+      if (Number(roadbook[i].dayCounter) === dayCounter) {
+        editDay.day = roadbook[i].day;
+        editDay.day = [
+          editDay.day.substring(0, 4),
+          editDay.day.substring(4, 6),
+          editDay.day.substring(6, 8),
+        ].join("-");
+        editDay.start = roadbook[i].start;
+        editDay.end = roadbook[i].end;
+        editDay.weather = roadbook[i].weather;
+        editDay.difficulty = roadbook[i].difficulty;
+        editDay.night = roadbook[i].night;
+        editDay.landscape = roadbook[i].landscape;
+        editDay.mood = roadbook[i].mood;
+        editDay.dayCounter = roadbook[i].dayCounter;
+        editDay.detail = roadbook[i].detail;
+        editDay.summary = roadbook[i].summary;
+        editDay.cumul = roadbook[i].cumul;
+        editDay.debutParcours = roadbook[i].debutParcours;
+        editDay.debutParcoursLat = roadbook[i].debutParcoursLat;
+        editDay.debutParcoursLng = roadbook[i].debutParcoursLng;
+        editDay.dist = roadbook[i].dist;
+        editDay.elePos = roadbook[i].elePos;
+        editDay.eleNeg = roadbook[i].eleNeg;
+        editDay.finParcours = roadbook[i].finParcours;
+        editDay.finParcoursLat = roadbook[i].finParcoursLat;
+        editDay.finParcoursLng = roadbook[i].finParcoursLng;
+        editDay.rando = roadbook[i].rando;
+        editDay.stepsAnne = roadbook[i].stepsAnne;
+        editDay.stepsOlivier = roadbook[i].stepsOlivier;
+        editDay.rupture = roadbook[i.rupture];
       }
     }
-
-    editDay.day = [
-      editDay.day.substring(0, 4),
-      editDay.day.substring(4, 6),
-      editDay.day.substring(6, 8),
-    ].join("-");
 
     console.info("Load editDay", editDay);
     buttonLabel = "Update";
@@ -198,10 +224,20 @@
     editDay.landscape = Number(editDay.landscape);
     editDay.mood = Number(editDay.mood);
     editDay.dayCounter = Number(editDay.dayCounter);
+    editDay.cumul = Number(editDay.cumul);
+    editDay.debutParcours = Number(editDay.debutParcours);
+    editDay.debutParcoursLat = Number(editDay.debutParcoursLat);
+    editDay.debutParcoursLng = Number(editDay.debutParcoursLng);
+    editDay.dist = Number(editDay.dist);
+    editDay.elePos = Number(editDay.elePos);
+    editDay.eleNeg = Number(editDay.eleNeg);
+    editDay.finParcours = Number(editDay.finParcours);
+    editDay.finParcoursLat = Number(editDay.finParcoursLat);
+    editDay.finParcoursLng = Number(editDay.finParcoursLng);
     editDay.stepsAnne = Number(editDay.stepsAnne);
     editDay.stepsOlivier = Number(editDay.stepsOlivier);
 
-    if (editDay.key === "") {
+    if (buttonLabel === "Add") {
       // Insert new day
       res = await fetch("/MDB/parcours", {
         method: "POST",
@@ -214,22 +250,29 @@
         body: JSON.stringify(editDay),
       });
       new_id = await res.json();
-      editDay.key = editDay.dayCounter;
 
-      // remise à jour du tableau
+      // Insertion du nouveau day dans roadbook en première place
       roadbook.unshift({
         day: editDay.day,
-        start: editDay.start,
-        end: editDay.end,
-        key: editDay.dayCounter,
         weather: editDay.weather,
         difficulty: editDay.difficulty,
         night: editDay.night,
         landscape: editDay.landscape,
         mood: editDay.mood,
-        detail: editDay.detail,
-        summary: editDay.summary,
-        rando: editDay.rando,
+        dayCounter: editDay.dayCounter,
+        cumul: editDay.cumul,
+        debutParcours: editDay.debutParcours,
+        debutParcoursLat: editDay.debutParcoursLat,
+        debutParcoursLng: editDay.debutParcoursLng,
+        dist: editDay.dist,
+        elePos: editDay.elePos,
+        eleNeg: editDay.eleNeg,
+        finParcours: editDay.finParcours,
+        finParcoursLat: editDay.finParcoursLat,
+        finParcoursLng: editDay.finParcoursLng,
+        stepsAnne: editDay.stepsAnne,
+        stepsOlivier: editDay.stepsOlivier,
+        rupture: editDay.rupture,
       });
       roadbook = roadbook;
     } else {
@@ -249,7 +292,10 @@
 
       //mise à jour du tableau
       for (var i = 0; i < roadbook.length; i++) {
-        if (roadbook[i].day === editDay.day) {
+        if (roadbook[i].dayCounter === editDay.dayCounter) {
+          roadbook[i].day = editDay.day;
+          roadbook[i].start = editDay.start;
+          roadbook[i].end = editDay.end;
           roadbook[i].weather = Number(editDay.weather);
           roadbook[i].difficulty = Number(editDay.difficulty);
           roadbook[i].night = Number(editDay.night);
@@ -257,18 +303,23 @@
           roadbook[i].mood = Number(editDay.mood);
           roadbook[i].detail = editDay.detail;
           roadbook[i].summary = editDay.summary;
-          roadbook[i].start = editDay.start;
-          roadbook[i].end = editDay.end;
-          roadbook[i].dayCounter = Number(editDay.dayCounter);
+          roadbook[i].cumul = Number(editDay.cumul);
+          roadbook[i].debutParcours = Number(editDay.debutParcours);
+          roadbook[i].debutParcoursLat = Number(editDay.debutParcoursLat);
+          roadbook[i].debutParcoursLng = Number(editDay.debutParcoursLng);
           roadbook[i].dist = Number(editDay.dist) || 0;
           roadbook[i].elePos = Number(editDay.elePos) || 0;
           roadbook[i].eleNeg = Number(editDay.eleNeg) || 0;
           roadbook[i].finParcours = Number(editDay.finParcours);
-          roadbook[i].debutParcours = Number(editDay.debutParcours);
-          roadbook[i].cumul = Number(editDay.cumul);
+          roadbook[i].finParcoursLat = Number(editDay.finParcoursLat);
+          roadbook[i].finParcoursLng = Number(editDay.finParcoursLng);
+          roadbook[i].rando = editDay.rando;
+          roadbook[i].stepsAnne = Number(editDay.stepsAnne);
+          roadbook[i].stepsOlivier = Number(editDay.stepsOlivier);
         }
       }
     }
+    initEditDay();
   }
 
   export async function parcoursUpload(evt) {
@@ -279,7 +330,7 @@
       // Entire file
       const text = this.result;
       console.info("parcours upload editDay", editDay);
-      var pos = editDay.debutParcours || 1;
+      var pos = 0;
       var element = "";
       var prev_lat = 0;
       var prev_lng = 0;
@@ -289,7 +340,7 @@
       var dayDist = 0;
       var dayElePos = 0;
       var dayEleNeg = 0;
-      parcours = [];
+
       // By lines
       var lines = text.split("\n");
       var counter = 0;
@@ -319,12 +370,19 @@
           editParcours.lng = Number(data[1]);
           editParcours.ele = Number(Math.round(data[2]));
           editParcours.dayCounter = editDay.dayCounter;
-          if (counter === 0) {
+          if (counter === 0 && !editDay.rupture) {
             // Premier point de la journéee, ne pas tenir compte du précédent point
+            pos = editDay.debutParcours;
             prev_ele = editParcours.ele;
             editParcours.dist = 0;
             editDay.debutParcoursLat = editParcours.lat;
             editDay.debutParcoursLng = editParcours.lng;
+          } else if (counter === 0 && editDay.rupture) {
+            // Premier point des chargements suivant de la même journée
+            pos = editDay.finParcours;
+            prev_ele = editParcours.ele;
+            editParcours.dist = 0;
+            editDay.rupture = false;
           } else {
             editParcours.dist =
               Math.round(
@@ -363,22 +421,43 @@
           counter++;
         }
       }
-      //console.info("data", parcours);
-      editDay.dist = Math.round(dayDist / 100) / 10;
+      console.info("parcours", parcours.length);
+      if (rupture) {
+        parcours[parcours.length - 1].rupture = rupture;
+        editDay.rupture = rupture;
+        rupture = false;
+      }
+
+      editDay.dist += Math.round(dayDist / 100) / 10;
       editDay.cumul += dayDist;
       editDay.elePos = dayElePos;
       editDay.eleNeg = dayEleNeg;
+
       editDay.finParcours = pos - 1;
       editDay.finParcoursLat = editParcours.lat;
       editDay.finParcoursLng = editParcours.lng;
     };
     reader.readAsText(file);
+
     console.info("editDay", editDay);
   }
 </script>
 
 <div class="py-2 grid gap-1">
   <div class="grid grid-cols-1 place-content-center w-full">
+    <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+      <select
+        bind:value={currentRando}
+        on:change={loadTables}
+        class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+      >
+        {#each randos as r}
+          <option value={r.rando}>
+            {r.description}
+          </option>
+        {/each}
+      </select>
+    </div>
     <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">
       <div class="w-1/3 px-3 mb-6 md:mb-0">
         <label
@@ -408,8 +487,11 @@
           name="files"
           size="30"
           on:change={parcoursUpload}
-          class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-        />
+          class=" appearance-none w-1/2 bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        /><label class=" appearance-none w-1/2"
+          >Rupture
+          <input type="checkbox" bind:checked={rupture} />
+        </label>
       </div>
     </div>
     <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">
@@ -833,8 +915,8 @@
             <td class="align-middle py-1 px-1 ">
               <button
                 class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline"
-                id={r.key}
-                on:click={loadDay(r.key)}>Edit</button
+                id={r.dayCounter}
+                on:click={loadDay(r.dayCounter)}>Edit</button
               >
             </td>
           </tr>

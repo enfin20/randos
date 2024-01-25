@@ -35,6 +35,10 @@
   });
 
   export async function loadTables() {
+    if (map) {
+      console.log("Unloading Leaflet map.");
+      map.remove();
+    }
     let diffIcons = "";
     let landscapeIcons = "";
     let popupText = [];
@@ -142,13 +146,22 @@
         // tracé des lignes jour par jour
         if (parcours[i].dayCounter === currentDay) {
           latlngs.push([parcours[i].lat, parcours[i].lng]);
+          if (parcours[i].rupture) {
+            // rupture dans la journée, on trace le parcours
+            leaflet.polyline(latlngs, { color: "blue" }).addTo(map);
+            // on réinitialise le parcours
+            latlngs = [];
+          }
         } else {
           // nouveau jour, on trace le parcours du jour précédent
           // on ajoute la fin d'étape
           leaflet.polyline(latlngs, { color: "blue" }).addTo(map);
           // on réinitialise le parcours
           latlngs = [];
-          latlngs.push([parcours[i - 1].lat, parcours[i - 1].lng]);
+          if (i > 0) {
+            latlngs.push([parcours[i - 1].lat, parcours[i - 1].lng]);
+          }
+
           currentDay++;
         }
       }

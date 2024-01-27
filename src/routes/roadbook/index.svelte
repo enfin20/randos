@@ -68,6 +68,16 @@
     }
 
     if (dayId > -1) {
+      editDay.day = roadbook[dayId].day;
+      // editDay.day.setDate(editDay.day, getDate() + 1);
+      editDay.day = [
+        editDay.day.substring(0, 4),
+        editDay.day.substring(4, 6),
+        editDay.day.substring(6, 8),
+      ].join("-");
+      var tempDay = new Date(Date.parse(editDay.day));
+      tempDay.setDate(tempDay.getDate() + 1);
+      editDay.day = tempDay.toJSON().slice(0, 10);
       editDay.start = roadbook[dayId].end;
       editDay.debutParcours = roadbook[dayId].finParcours;
       editDay.finParcours = editDay.debutParcours;
@@ -75,6 +85,7 @@
       editDay.cumul = roadbook[dayId].cumul || 0;
       editDay.rando = roadbook[dayId].rando;
     } else {
+      editDay.day = new Date().toJSON().slice(0, 10);
       editDay.start = "";
       editDay.debutParcours = 1;
       editDay.finParcours = 0;
@@ -82,7 +93,7 @@
       editDay.cumul = 0;
       editDay.rando = currentRando;
     }
-    editDay.day = new Date().toJSON().slice(0, 10);
+
     editDay.end = "";
     editDay.weather = -1;
     editDay.difficulty = -1;
@@ -206,7 +217,6 @@
 
     console.info("Load editDay", editDay);
     buttonLabel = "Update";
-    // calcDist();
     //mise à jour des icones
     updateIcons();
   }
@@ -237,8 +247,11 @@
     editDay.finParcoursLng = Number(editDay.finParcoursLng);
     editDay.stepsAnne = Number(editDay.stepsAnne);
     editDay.stepsOlivier = Number(editDay.stepsOlivier);
+    console.info("Update day", editDay);
+    console.info("buttonLabel", buttonLabel);
 
     if (buttonLabel === "Add") {
+      console.info("ADD");
       // Insert new day
       res = await fetch("/MDB/parcours", {
         method: "POST",
@@ -282,6 +295,8 @@
       });
       roadbook = roadbook;
     } else {
+      console.info("UPDATE");
+      console.info("parcours.length", parcours.length);
       // update day
       if (parcours.length > 0) {
         res = await fetch("/MDB/parcours", {

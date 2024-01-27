@@ -23,7 +23,7 @@
     let res = await fetch("/MDB/randos");
     const ran = await res.json();
     randos = await ran.randos;
-    currentRando = randos[0].rando;
+    currentRando = randos[1].rando;
     loadTables();
   });
 
@@ -158,9 +158,9 @@
           leaflet.polyline(latlngs, { color: "blue" }).addTo(map);
           // on réinitialise le parcours
           latlngs = [];
-          if (i > 0) {
-            latlngs.push([parcours[i - 1].lat, parcours[i - 1].lng]);
-          }
+          //          if (i > 0 && !parcours[i - 1].rupture) {
+          //            latlngs.push([parcours[i - 1].lat, parcours[i - 1].lng]);
+          //          }
 
           currentDay++;
         }

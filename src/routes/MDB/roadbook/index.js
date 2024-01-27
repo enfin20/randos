@@ -41,10 +41,11 @@ export async function get(request) {
 export async function post(request) {
   // intégration d'un nouveau jour
   try {
+    const roadbook = JSON.parse(request.body);
+    console.info("insert", roadbook)
     const dbConnection = await connectToDatabase();
     const db = dbConnection.db;
     const collection = db.collection("Roadbook");
-    const roadbook = JSON.parse(request.body);
 
     let t = await collection.insertOne(roadbook);
 
@@ -67,6 +68,7 @@ export async function post(request) {
 export async function put(request) {
   try {
     const roadbook = JSON.parse(request.body);
+    console.info("update", roadbook)
     const dbConnection = await connectToDatabase();
     const db = dbConnection.db;
     const collection = db.collection("Roadbook");
@@ -75,6 +77,7 @@ export async function put(request) {
       { dayCounter: roadbook.dayCounter },
       {
         $set: {
+          day:roadbook.day,
           start: roadbook.start,
           end: roadbook.end,
           weather: roadbook.weather,

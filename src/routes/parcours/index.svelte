@@ -36,7 +36,7 @@
     let res = await fetch("/MDB/randos");
     const ran = await res.json();
     randos = await ran.randos;
-    currentRando = randos[0].rando;
+    currentRando = randos[1].rando;
     loadTables();
     ctxParcours = chartParcours.getContext("2d");
     chartParcoursData = new chartjs(ctxParcours, {});

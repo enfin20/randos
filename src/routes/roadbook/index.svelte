@@ -43,7 +43,7 @@
     let res = await fetch("/MDB/randos");
     const ran = await res.json();
     randos = await ran.randos;
-    currentRando = randos[1].rando;
+    currentRando = randos[0].rando;
     console.info("randos", randos);
     loadTables();
   });
@@ -559,271 +559,300 @@
         />
       </div>
     </div>
-    <form class="w-full " on:submit|preventDefault={insertRoadbook}>
-      <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">
-        <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Date
-          </label>
-          <input
-            type="date"
-            bind:value={editDay.day}
-            class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-          />
-        </div>
-        <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Début
-          </label>
-          <input
-            type="text"
-            bind:value={editDay.start}
-            class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-          />
-        </div>
-        <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Fin
-          </label>
-          <input
-            type="text"
-            bind:value={editDay.end}
-            class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-          />
-        </div>
+    <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">
+      <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Date
+        </label>
+        <input
+          type="date"
+          bind:value={editDay.day}
+          class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        />
       </div>
-      <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">
-        <div class="w-1/2 md:w-1/3  px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Pas A.
-          </label>
-          <input
-            type="text"
-            bind:value={editDay.stepsAnne}
-            class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-          />
-        </div>
-        <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Pas O.
-          </label>
-          <input
-            type="text"
-            bind:value={editDay.stepsOlivier}
-            class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-          />
-        </div>
-        <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Randonnée
-          </label>
-          <input
-            type="text"
-            bind:value={editDay.rando}
-            class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-          />
-        </div>
+      <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Début
+        </label>
+        <input
+          type="text"
+          bind:value={editDay.start}
+          class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        />
       </div>
+      <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Fin
+        </label>
+        <input
+          type="text"
+          bind:value={editDay.end}
+          class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        />
+      </div>
+    </div>
+    <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">
+      <div class="w-0 md:w-1/3  px-3 mb-6 md:mb-0" />
+      <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Fin lat.
+        </label>
+        <input
+          type="text"
+          bind:value={editDay.finParcoursLat}
+          class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        />
+      </div>
+      <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Fin lng.
+        </label>
+        <input
+          type="text"
+          bind:value={editDay.finParcoursLng}
+          class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        />
+      </div>
+    </div>
 
-      <div class=" w-full md:w-1/2 flex flex-wrap -mx-3 mb-6">
-        <div class="w-full px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Météo
-          </label>
-          {#each weatherIcon as wi, i}
-            <input
-              type="radio"
-              bind:group={editDay.weather}
-              name="r_weather"
-              value={i}
-              id="r_weather{i}"
-              class="peer hidden"
-              on:change={updateIcons}
-            />
-            <label
-              for="r_weather{i}"
-              class="select-none cursor-pointer  py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out  "
-            >
-              <img
-                src="/images/{wi}{imgNewWeatherActivate[i]}.png"
-                alt=""
-                class="w-[30px] inline"
-              /></label
-            >
-          {/each}
-        </div>
-        <div class="w-full px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Difficulté
-          </label>
-          {#each difficultyIcon as di, i}
-            <input
-              type="radio"
-              bind:group={editDay.difficulty}
-              name="r_difficulty"
-              value={i}
-              id="r_difficulty{i}"
-              class="peer hidden"
-              on:change={updateIcons}
-            />
-            <label
-              for="r_difficulty{i}"
-              class="select-none cursor-pointer py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out "
-            >
-              <img
-                src="/images/{di}{imgNewDifficultyActivate[i]}.png"
-                alt=""
-                class="w-[40px] inline"
-              /></label
-            >
-          {/each}
-        </div>
-        <div class="w-full px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Nuit
-          </label>
-          {#each nightIcon as ni, i}
-            <input
-              type="radio"
-              bind:group={editDay.night}
-              name="r_night"
-              value={i}
-              id="r_night{i}"
-              class="peer hidden"
-              on:change={updateIcons}
-            />
-            <label
-              for="r_night{i}"
-              class="select-none cursor-pointer py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out "
-            >
-              <img
-                src="/images/{ni}{imgNewNightActivate[i]}.png"
-                alt=""
-                class="w-[40px] inline"
-              /></label
-            >
-          {/each}
-        </div>
-        <div class="w-full px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Paysage
-          </label>
-          {#each starsIcon as si, i}
-            <input
-              type="radio"
-              bind:group={editDay.landscape}
-              name="r_landscape"
-              value={i}
-              id="r_landscape{i}"
-              class="peer hidden"
-              on:change={updateIcons}
-            />
-            <label
-              for="r_landscape{i}"
-              class="select-none cursor-pointer py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out "
-            >
-              <img
-                src="/images/{si}{imgNewLandscapeActivate[i]}.png"
-                alt=""
-                class="w-[40px] inline"
-              /></label
-            >
-          {/each}
-        </div>
-        <div class="w-full px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Humeur
-          </label>
-          {#each moodIcon as mi, i}
-            <input
-              type="radio"
-              bind:group={editDay.mood}
-              name="mood"
-              value={i}
-              id="r_mood{i}"
-              class="peer hidden"
-              on:change={updateIcons}
-            />
-            <label
-              for="r_mood{i}"
-              class="select-none cursor-pointer py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out "
-            >
-              <img
-                src="/images/{mi}{imgNewMoodActivate[i]}.png"
-                alt=""
-                class="w-[40px] inline"
-              /></label
-            >
-          {/each}
-        </div>
-        <div class="w-full px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Résumé
-          </label>
-          <textarea
-            bind:value={editDay.summary}
-            class=" w-full appearance-none border-gray-100 bg-gray-100 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none"
-            rows="5"
-          />
-        </div>
-        <div class="w-full px-3 mb-6 md:mb-3">
-          <label
-            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-            for="grid-first-name"
-          >
-            Détails
-          </label>
-          <textarea
-            bind:value={editDay.detail}
-            class=" w-full appearance-none border-gray-100 bg-gray-100 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none"
-            rows="20"
-          />
-        </div>
-        <div class="w-1/2 px-3 mb-6 md:mb-0">
-          <button
-            class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            {buttonLabel}
-          </button>
-        </div>
+    <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">
+      <div class="w-1/2 md:w-1/3  px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Pas A.
+        </label>
+        <input
+          type="text"
+          bind:value={editDay.stepsAnne}
+          class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        />
       </div>
-    </form>
+      <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Pas O.
+        </label>
+        <input
+          type="text"
+          bind:value={editDay.stepsOlivier}
+          class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        />
+      </div>
+      <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Randonnée
+        </label>
+        <input
+          type="text"
+          bind:value={editDay.rando}
+          class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        />
+      </div>
+    </div>
+
+    <div class=" w-full md:w-1/2 flex flex-wrap -mx-3 mb-6">
+      <div class="w-full px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Météo
+        </label>
+        {#each weatherIcon as wi, i}
+          <input
+            type="radio"
+            bind:group={editDay.weather}
+            name="r_weather"
+            value={i}
+            id="r_weather{i}"
+            class="peer hidden"
+            on:change={updateIcons}
+          />
+          <label
+            for="r_weather{i}"
+            class="select-none cursor-pointer  py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out  "
+          >
+            <img
+              src="/images/{wi}{imgNewWeatherActivate[i]}.png"
+              alt=""
+              class="w-[30px] inline"
+            /></label
+          >
+        {/each}
+      </div>
+      <div class="w-full px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Difficulté
+        </label>
+        {#each difficultyIcon as di, i}
+          <input
+            type="radio"
+            bind:group={editDay.difficulty}
+            name="r_difficulty"
+            value={i}
+            id="r_difficulty{i}"
+            class="peer hidden"
+            on:change={updateIcons}
+          />
+          <label
+            for="r_difficulty{i}"
+            class="select-none cursor-pointer py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out "
+          >
+            <img
+              src="/images/{di}{imgNewDifficultyActivate[i]}.png"
+              alt=""
+              class="w-[40px] inline"
+            /></label
+          >
+        {/each}
+      </div>
+      <div class="w-full px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Nuit
+        </label>
+        {#each nightIcon as ni, i}
+          <input
+            type="radio"
+            bind:group={editDay.night}
+            name="r_night"
+            value={i}
+            id="r_night{i}"
+            class="peer hidden"
+            on:change={updateIcons}
+          />
+          <label
+            for="r_night{i}"
+            class="select-none cursor-pointer py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out "
+          >
+            <img
+              src="/images/{ni}{imgNewNightActivate[i]}.png"
+              alt=""
+              class="w-[40px] inline"
+            /></label
+          >
+        {/each}
+      </div>
+      <div class="w-full px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Paysage
+        </label>
+        {#each starsIcon as si, i}
+          <input
+            type="radio"
+            bind:group={editDay.landscape}
+            name="r_landscape"
+            value={i}
+            id="r_landscape{i}"
+            class="peer hidden"
+            on:change={updateIcons}
+          />
+          <label
+            for="r_landscape{i}"
+            class="select-none cursor-pointer py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out "
+          >
+            <img
+              src="/images/{si}{imgNewLandscapeActivate[i]}.png"
+              alt=""
+              class="w-[40px] inline"
+            /></label
+          >
+        {/each}
+      </div>
+      <div class="w-full px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Humeur
+        </label>
+        {#each moodIcon as mi, i}
+          <input
+            type="radio"
+            bind:group={editDay.mood}
+            name="mood"
+            value={i}
+            id="r_mood{i}"
+            class="peer hidden"
+            on:change={updateIcons}
+          />
+          <label
+            for="r_mood{i}"
+            class="select-none cursor-pointer py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out "
+          >
+            <img
+              src="/images/{mi}{imgNewMoodActivate[i]}.png"
+              alt=""
+              class="w-[40px] inline"
+            /></label
+          >
+        {/each}
+      </div>
+      <div class="w-full px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Résumé
+        </label>
+        <textarea
+          bind:value={editDay.summary}
+          class=" w-full appearance-none border-gray-100 bg-gray-100 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none"
+          rows="5"
+        />
+      </div>
+      <div class="w-full px-3 mb-6 md:mb-3">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-first-name"
+        >
+          Détails
+        </label>
+        <textarea
+          bind:value={editDay.detail}
+          class=" w-full appearance-none border-gray-100 bg-gray-100 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none"
+          rows="20"
+        />
+      </div>
+      <div class="w-1/2 px-3 mb-6 md:mb-0">
+        <button
+          class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          on:click={insertRoadbook}
+        >
+          {buttonLabel}
+        </button>
+      </div>
+    </div>
   </div>
   <div class="w-full md:w-1/2 flex flex-wrap">
     <table id="rdb" class="w-full text-xs text-gray-500 bg-white">

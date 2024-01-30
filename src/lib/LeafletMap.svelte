@@ -23,7 +23,7 @@
     let res = await fetch("/MDB/randos");
     const ran = await res.json();
     randos = await ran.randos;
-    currentRando = randos[1].rando;
+    currentRando = randos[0].rando;
     loadTables();
   });
 
@@ -105,13 +105,25 @@
         iconAnchor: [24, 48],
         popupAnchor: [0, -32],
       });
+      var bivouacIcon = new leaflet.Icon({
+        iconUrl: "/images/free_tent.png",
+        iconSize: [48, 48],
+        iconAnchor: [24, 48],
+        popupAnchor: [0, -32],
+      });
       var campIcon = new leaflet.Icon({
-        iconUrl: "/images/camping-tent.png",
+        iconUrl: "/images/camping_tent.png",
         iconSize: [48, 48],
         iconAnchor: [24, 48],
         popupAnchor: [0, -32],
       });
       var hotelIcon = new leaflet.Icon({
+        iconUrl: "/images/maphotel.png",
+        iconSize: [48, 48],
+        iconAnchor: [24, 48],
+        popupAnchor: [0, -32],
+      });
+      var freeIcon = new leaflet.Icon({
         iconUrl: "/images/home.png",
         iconSize: [48, 48],
         iconAnchor: [24, 48],
@@ -123,7 +135,15 @@
         iconAnchor: [24, 48],
         popupAnchor: [0, -32],
       });
-      var typeIcons = [starsIcon, campIcon, hotelIcon, reposIcon];
+
+      var typeIcons = [
+        starsIcon,
+        bivouacIcon,
+        campIcon,
+        hotelIcon,
+        freeIcon,
+        reposIcon,
+      ];
       let iconIndex = 0;
 
       map = leaflet
@@ -292,14 +312,10 @@
 
         // on détermine si il s'agit d'un zero day
         if (roadbook[i].difficulty > 0) {
-          if (
-            roadbook[i].night === 0 ||
-            roadbook[i].night === 1 ||
-            roadbook[i].night === 2
-          ) {
+          if (roadbook[i].night <= 1) {
             iconIndex = 1;
           } else {
-            iconIndex = 2;
+            iconIndex = roadbook[i].night;
           }
           if (i === roadbook.length - 1) {
             iconIndex = 0;
@@ -358,7 +374,7 @@
                 ],
                 {
                   title: "Arrivée jour " + roadbook[i].dayCounter,
-                  icon: typeIcons[3],
+                  icon: typeIcons[5],
                 }
               )
               .bindPopup(

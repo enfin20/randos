@@ -36,7 +36,7 @@
     let res = await fetch("/MDB/randos");
     const ran = await res.json();
     randos = await ran.randos;
-    currentRando = randos[1].rando;
+    currentRando = randos[0].rando;
     loadTables();
     ctxParcours = chartParcours.getContext("2d");
     chartParcoursData = new chartjs(ctxParcours, {});
@@ -46,6 +46,9 @@
     let res = await fetch("/MDB/roadbook?sort=1&map=ok&rando=" + currentRando);
     const roa = await res.json();
     roadbook = await roa.roadbook;
+
+    debutParcours = 100000000;
+    finParcours = 0;
 
     for (var i = 0; i < roadbook.length; i++) {
       if (roadbook[i].debutParcours <= debutParcours) {
@@ -61,6 +64,7 @@
         roadbook[0].distCumul = Number(roadbook[0].dist || 0);
       }
     }
+
     loadParcours();
   }
 
@@ -213,7 +217,7 @@
     <select
       bind:value={currentRando}
       on:change={loadTables}
-      class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+      class="text-xs appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded mb-1 leading-tight focus:outline-none focus:bg-white"
     >
       {#each randos as r}
         <option value={r.rando}>
@@ -226,18 +230,18 @@
     <select
       bind:value={debutParcours}
       on:change={loadParcours}
-      class="text-xs appearance-none border-2 border-gray-200 rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-pink-400"
+      class="text-xs appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
     >
       {#each roadbook as r}
         <option value={r.debutParcours}>
           Jour {r.dayCounter} : {r.start}
         </option>
       {/each}
-    </select>
+    </select>&nbsp;
     <select
       bind:value={finParcours}
       on:change={loadParcours}
-      class="text-xs appearance-none border-2 border-gray-200 rounded  w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-pink-400"
+      class="text-xs appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
     >
       {#each roadbook as r}
         <option value={r.finParcours}>

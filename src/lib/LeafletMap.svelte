@@ -82,7 +82,7 @@
     }
 
     // pour réduire le nombre de points à récupérer dans la base
-    let freq = Math.round(Math.max((finParcours - debutParcours) / 5000, 1), 0);
+    let freq = 1; //Math.round(Math.max((finParcours - debutParcours) / 5000, 1), 0);
     res = await fetch(
       "/MDB/parcours?freq=" +
         freq +

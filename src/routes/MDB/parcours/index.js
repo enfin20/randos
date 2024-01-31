@@ -11,23 +11,11 @@ export async function get(request) {
     const dbConnection = await connectToDatabase();
     const db = dbConnection.db;
     const collection = db.collection("Parcours");
-    const parcours = await collection.find({
+    const parcours = await collection.find({rando: rando,
       $and: [{ pos: { $gt: Number(start) } },
       { pos: { $lte: Number(end) } },
-        { pos: { $mod: [Number(freq), 0] } }],
-      rando: rando
-    }).sort({pos:1}).toArray();
-
-    for (var i = 0; i < parcours.length; i++) {
-      parcours[i].key = parcours[i]._id;
-    }
-    console.log("*************************************************************************")
-    console.info("start", start)
-    console.info("end", end)
-    console.info("parcours.length", parcours.length)
-    console.info("pos max", parcours[parcours.length-1].pos)    
-    console.log("*************************************************************************")
-
+        { pos: { $mod: [Number(freq), 0] } }]
+          }).sort({pos:1}).toArray();
 
     return {
       status: 200,

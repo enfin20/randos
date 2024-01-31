@@ -118,7 +118,7 @@
         popupAnchor: [0, -32],
       });
       var hotelIcon = new leaflet.Icon({
-        iconUrl: "/images/maphotel.png",
+        iconUrl: "/images/map_hotel.png",
         iconSize: [48, 48],
         iconAnchor: [24, 48],
         popupAnchor: [0, -32],

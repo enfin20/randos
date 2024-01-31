@@ -285,7 +285,7 @@
             }
           }
         }
-
+        // text pour l'affichage
         popupText.push(
           "<p><b>Jour " +
             roadbook[i].dayCounter +

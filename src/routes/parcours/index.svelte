@@ -57,12 +57,6 @@
       if (roadbook[i].finParcours >= finParcours) {
         finParcours = roadbook[i].finParcours;
       }
-      if (i > 0) {
-        roadbook[i].distCumul =
-          roadbook[i - 1].distCumul + Number(roadbook[i].dist || 0);
-      } else {
-        roadbook[0].distCumul = Number(roadbook[0].dist || 0);
-      }
     }
 
     loadParcours();

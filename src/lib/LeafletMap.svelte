@@ -12,6 +12,7 @@
   ];
   let difficultyIcon = ["ZeroDay", "Star", "Star", "Star"];
   let starIcon = ["Ugly", "Soso", "Star", "Star", "Star"];
+  let moodIcon = ["Sad", "Neutral", "Happy"];
   let mapElement;
   let map;
   let roadbook = [];
@@ -294,6 +295,9 @@
             " / " +
             roadbook[i].end +
             "</b></p><p><img src='/images/" +
+            moodIcon[roadbook[i].mood] +
+            ".png' class='w-[25px] md:w-[30px] inline' />&nbsp;" +
+            "<img src='/images/" +
             weatherIcon[roadbook[i].weather] +
             ".png' class='w-[25px] md:w-[30px] inline' />&nbsp;&nbsp;&nbsp;" +
             roadbook[i].dist +
@@ -307,7 +311,15 @@
             landscapeIcons +
             "</p><p>" +
             roadbook[i].summary +
-            "</p>"
+            "</p><p>" +
+            roadbook[i].detail +
+            "</p><p>Cumul : " +
+            Number(Math.round(roadbook[i].distCumul)).toLocaleString("fr") +
+            " kms " +
+            Number(roadbook[i].elePosCumul).toLocaleString("fr") +
+            " / " +
+            Number(roadbook[i].eleNegCumul).toLocaleString("fr") +
+            " m</p>"
         );
 
         // on détermine si il s'agit d'un zero day
@@ -361,7 +373,9 @@
                   icon: typeIcons[iconIndex],
                 }
               )
-              .bindPopup(popupText[i])
+              .bindPopup(
+                leaflet.popup({ minwidth: 500 }).setContent(popupText[i])
+              )
           );
         } else {
           // zero day, on affiche le(s) jour(s) précédant(s) en plus

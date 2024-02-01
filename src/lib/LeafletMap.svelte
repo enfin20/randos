@@ -42,7 +42,7 @@
     }
 
     var customOptions = {
-      maxWidth: "500",
+      minWidth: "250",
     };
     let diffIcons = "";
     let landscapeIcons = "";

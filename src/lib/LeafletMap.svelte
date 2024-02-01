@@ -40,6 +40,10 @@
       console.log("Unloading Leaflet map.");
       map.remove();
     }
+
+    var customOptions = {
+      maxWidth: "500",
+    };
     let diffIcons = "";
     let landscapeIcons = "";
     let popupText = [];
@@ -373,9 +377,7 @@
                   icon: typeIcons[iconIndex],
                 }
               )
-              .bindPopup(
-                leaflet.popup({ minwidth: 500 }).setContent(popupText[i])
-              )
+              .bindPopup(popupText[i], customOptions)
           );
         } else {
           // zero day, on affiche le(s) jour(s) précédant(s) en plus

@@ -318,7 +318,7 @@
             "</p><p>" +
             roadbook[i].detail +
             "</p><p>Cumul : " +
-            Number(Math.round(roadbook[i].cumul)).toLocaleString("fr") +
+            Number(Math.round(roadbook[i].cumul / 1000)).toLocaleString("fr") +
             " kms " +
             Number(roadbook[i].elePosCumul).toLocaleString("fr") +
             " / " +

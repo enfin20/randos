@@ -115,6 +115,7 @@
 
     parcours = [];
     buttonLabel = "Add";
+    updateIcons();
   }
 
   function updateIcons() {
@@ -128,6 +129,9 @@
     }
 
     for (var i = 0; i < difficultyIcon.length; i++) {
+      if (editDay.difficulty < 0) {
+        imgNewDifficultyActivate[i] = "";
+      }
       if (editDay.difficulty === 0) {
         // zero day
         imgNewDifficultyActivate[0] = "";
@@ -148,6 +152,9 @@
     }
 
     for (var i = 0; i < starsIcon.length; i++) {
+      if (editDay.landscape < 0) {
+        imgNewLandscapeActivate[i] = "_in";
+      }
       if (editDay.landscape === 0) {
         imgNewLandscapeActivate[0] = "";
         imgNewLandscapeActivate[i] = "_in";
@@ -180,6 +187,7 @@
   }
 
   export async function loadDay(dayCounter) {
+    console.info("loadDay roadbook.length", roadbook.length);
     for (var i = 0; i < roadbook.length; i++) {
       if (Number(roadbook[i].dayCounter) === dayCounter) {
         editDay.day = roadbook[i].day;
@@ -225,121 +233,127 @@
     let new_id = "";
     var res = new Object();
     delete editDay.rupture;
-    editDay.day = editDay.day
-      .substring(0, 4)
-      .concat(editDay.day.substring(5, 7))
-      .concat(editDay.day.substring(8, 10));
-    editDay.weather = Number(editDay.weather);
-    editDay.difficulty = Number(editDay.difficulty);
-    editDay.night = Number(editDay.night);
-    editDay.landscape = Number(editDay.landscape);
-    editDay.mood = Number(editDay.mood);
-    editDay.dayCounter = Number(editDay.dayCounter);
-    editDay.cumul = Number(editDay.cumul);
-    editDay.debutParcours = Number(editDay.debutParcours);
-    editDay.debutParcoursLat = Number(editDay.debutParcoursLat);
-    editDay.debutParcoursLng = Number(editDay.debutParcoursLng);
-    editDay.dist = Number(editDay.dist);
-    editDay.elePos = Number(editDay.elePos);
-    editDay.eleNeg = Number(editDay.eleNeg);
-    editDay.finParcours = Number(editDay.finParcours);
-    editDay.finParcoursLat = Number(editDay.finParcoursLat);
-    editDay.finParcoursLng = Number(editDay.finParcoursLng);
-    editDay.stepsAnne = Number(editDay.stepsAnne);
-    editDay.stepsOlivier = Number(editDay.stepsOlivier);
-    console.info("Update day", editDay);
-    console.info("buttonLabel", buttonLabel);
+    try {
+      editDay.day = editDay.day
+        .substring(0, 4)
+        .concat(editDay.day.substring(5, 7))
+        .concat(editDay.day.substring(8, 10));
+      editDay.weather = Number(editDay.weather);
+      editDay.difficulty = Number(editDay.difficulty);
+      editDay.night = Number(editDay.night);
+      editDay.landscape = Number(editDay.landscape);
+      editDay.mood = Number(editDay.mood);
+      editDay.dayCounter = Number(editDay.dayCounter);
+      editDay.cumul = Number(editDay.cumul);
+      editDay.debutParcours = Number(editDay.debutParcours);
+      editDay.debutParcoursLat = Number(editDay.debutParcoursLat);
+      editDay.debutParcoursLng = Number(editDay.debutParcoursLng);
+      editDay.dist = Number(editDay.dist);
+      editDay.elePos = Number(editDay.elePos);
+      editDay.eleNeg = Number(editDay.eleNeg);
+      editDay.finParcours = Number(editDay.finParcours);
+      editDay.finParcoursLat = Number(editDay.finParcoursLat);
+      editDay.finParcoursLng = Number(editDay.finParcoursLng);
+      editDay.stepsAnne = Number(editDay.stepsAnne);
+      editDay.stepsOlivier = Number(editDay.stepsOlivier);
+      console.info("Update day", editDay);
+      console.info("buttonLabel", buttonLabel);
 
-    if (buttonLabel === "Add") {
-      console.info("ADD");
-      // Insert new day
-      res = await fetch("/MDB/parcours", {
-        method: "POST",
-        body: JSON.stringify(parcours),
-      });
-      new_id = await res.json();
-
-      res = await fetch("/MDB/roadbook", {
-        method: "POST",
-        body: JSON.stringify(editDay),
-      });
-      new_id = await res.json();
-
-      // Insertion du nouveau day dans roadbook en première place
-      roadbook.unshift({
-        day: editDay.day,
-        start: editDay.start,
-        end: editDay.end,
-        weather: editDay.weather,
-        difficulty: editDay.difficulty,
-        night: editDay.night,
-        landscape: editDay.landscape,
-        mood: editDay.mood,
-        detail: editDay.detail,
-        summary: editDay.summary,
-        dayCounter: editDay.dayCounter,
-        cumul: editDay.cumul,
-        debutParcours: editDay.debutParcours,
-        debutParcoursLat: editDay.debutParcoursLat,
-        debutParcoursLng: editDay.debutParcoursLng,
-        dist: editDay.dist,
-        elePos: editDay.elePos,
-        eleNeg: editDay.eleNeg,
-        finParcours: editDay.finParcours,
-        finParcoursLat: editDay.finParcoursLat,
-        finParcoursLng: editDay.finParcoursLng,
-        stepsAnne: editDay.stepsAnne,
-        stepsOlivier: editDay.stepsOlivier,
-        rupture: editDay.rupture,
-        rando: editDay.rando,
-      });
-      roadbook = roadbook;
-    } else {
-      console.info("UPDATE");
-      console.info("parcours.length", parcours.length);
-      // update day
-      if (parcours.length > 0) {
+      if (buttonLabel === "Add") {
+        console.info("ADD");
+        // Insert new day
         res = await fetch("/MDB/parcours", {
           method: "POST",
           body: JSON.stringify(parcours),
         });
         new_id = await res.json();
-      }
 
-      res = await fetch("/MDB/roadbook", {
-        method: "PUT",
-        body: JSON.stringify(editDay),
-      });
+        res = await fetch("/MDB/roadbook", {
+          method: "POST",
+          body: JSON.stringify(editDay),
+        });
+        new_id = await res.json();
 
-      //mise à jour du tableau
-      for (var i = 0; i < roadbook.length; i++) {
-        if (roadbook[i].dayCounter === editDay.dayCounter) {
-          roadbook[i].day = editDay.day;
-          roadbook[i].start = editDay.start;
-          roadbook[i].end = editDay.end;
-          roadbook[i].weather = Number(editDay.weather);
-          roadbook[i].difficulty = Number(editDay.difficulty);
-          roadbook[i].night = Number(editDay.night);
-          roadbook[i].landscape = Number(editDay.landscape);
-          roadbook[i].mood = Number(editDay.mood);
-          roadbook[i].detail = editDay.detail;
-          roadbook[i].summary = editDay.summary;
-          roadbook[i].cumul = Number(editDay.cumul);
-          roadbook[i].debutParcours = Number(editDay.debutParcours);
-          roadbook[i].debutParcoursLat = Number(editDay.debutParcoursLat);
-          roadbook[i].debutParcoursLng = Number(editDay.debutParcoursLng);
-          roadbook[i].dist = Number(editDay.dist) || 0;
-          roadbook[i].elePos = Number(editDay.elePos) || 0;
-          roadbook[i].eleNeg = Number(editDay.eleNeg) || 0;
-          roadbook[i].finParcours = Number(editDay.finParcours);
-          roadbook[i].finParcoursLat = Number(editDay.finParcoursLat);
-          roadbook[i].finParcoursLng = Number(editDay.finParcoursLng);
-          roadbook[i].rando = editDay.rando;
-          roadbook[i].stepsAnne = Number(editDay.stepsAnne);
-          roadbook[i].stepsOlivier = Number(editDay.stepsOlivier);
+        // Insertion du nouveau day dans roadbook en première place
+        roadbook.unshift({
+          day: editDay.day,
+          start: editDay.start,
+          end: editDay.end,
+          weather: editDay.weather,
+          difficulty: editDay.difficulty,
+          night: editDay.night,
+          landscape: editDay.landscape,
+          mood: editDay.mood,
+          detail: editDay.detail,
+          summary: editDay.summary,
+          dayCounter: editDay.dayCounter,
+          cumul: editDay.cumul,
+          debutParcours: editDay.debutParcours,
+          debutParcoursLat: editDay.debutParcoursLat,
+          debutParcoursLng: editDay.debutParcoursLng,
+          dist: editDay.dist,
+          elePos: editDay.elePos,
+          eleNeg: editDay.eleNeg,
+          finParcours: editDay.finParcours,
+          finParcoursLat: editDay.finParcoursLat,
+          finParcoursLng: editDay.finParcoursLng,
+          stepsAnne: editDay.stepsAnne,
+          stepsOlivier: editDay.stepsOlivier,
+          rupture: editDay.rupture,
+          rando: editDay.rando,
+        });
+        roadbook = roadbook;
+      } else {
+        console.info("UPDATE");
+        console.info("roadbook.length", roadbook.length);
+        // update day
+        if (parcours.length > 0) {
+          res = await fetch("/MDB/parcours", {
+            method: "POST",
+            body: JSON.stringify(parcours),
+          });
+          new_id = await res.json();
         }
+
+        res = await fetch("/MDB/roadbook", {
+          method: "PUT",
+          body: JSON.stringify(editDay),
+        });
+
+        //mise à jour du tableau
+        for (var i = 0; i < roadbook.length; i++) {
+          if (roadbook[i].dayCounter === editDay.dayCounter) {
+            roadbook[i].day = editDay.day;
+            roadbook[i].start = editDay.start;
+            roadbook[i].end = editDay.end;
+            roadbook[i].weather = Number(editDay.weather);
+            roadbook[i].difficulty = Number(editDay.difficulty);
+            roadbook[i].night = Number(editDay.night);
+            roadbook[i].landscape = Number(editDay.landscape);
+            roadbook[i].mood = Number(editDay.mood);
+            roadbook[i].detail = editDay.detail;
+            roadbook[i].summary = editDay.summary;
+            roadbook[i].cumul = Number(editDay.cumul);
+            roadbook[i].debutParcours = Number(editDay.debutParcours);
+            roadbook[i].debutParcoursLat = Number(editDay.debutParcoursLat);
+            roadbook[i].debutParcoursLng = Number(editDay.debutParcoursLng);
+            roadbook[i].dist = Number(editDay.dist) || 0;
+            roadbook[i].elePos = Number(editDay.elePos) || 0;
+            roadbook[i].eleNeg = Number(editDay.eleNeg) || 0;
+            roadbook[i].finParcours = Number(editDay.finParcours);
+            roadbook[i].finParcoursLat = Number(editDay.finParcoursLat);
+            roadbook[i].finParcoursLng = Number(editDay.finParcoursLng);
+            roadbook[i].rando = editDay.rando;
+            roadbook[i].stepsAnne = Number(editDay.stepsAnne);
+            roadbook[i].stepsOlivier = Number(editDay.stepsOlivier);
+          }
+        }
+        console.info("roadbook.length after maj", roadbook.length);
       }
+    } catch (error) {
+      console.info("error", error);
     }
+
     initEditDay();
   }
 

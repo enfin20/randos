@@ -78,9 +78,11 @@ export async function post(request) {
 }
 
 export async function put(request) {
+
   try {
     const roadbook = JSON.parse(request.body);
-    console.info("update", roadbook)
+    if (roadbook.key === "") { console.info("roadbook", roadbook) }
+    console.info("update", roadbook.dayCounter)
     const dbConnection = await connectToDatabase();
     const db = dbConnection.db;
     const collection = db.collection("Roadbook");
@@ -116,35 +118,6 @@ export async function put(request) {
         },
       }
     );
-
-    return {
-      status: 200,
-      body: {
-        message: "Success",
-      },
-    };
-  } catch (err) {
-    return {
-      status: 500,
-      body: {
-        erreur: err.message,
-      },
-    };
-  }
-}
-
-export async function del(request) {
-  try {
-    const dbConnection = await connectToDatabase();
-    const db = dbConnection.db;
-    const collection = db.collection("Roadbook");
-    const roadbook = JSON.parse(request.body);
-
-    if (roadbook.key != "ALL") {
-      await collection.deleteOne({ day: roadbook.key });
-    } else {
-      await collection.deleteMany();
-    }
 
     return {
       status: 200,

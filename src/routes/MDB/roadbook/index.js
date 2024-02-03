@@ -88,7 +88,7 @@ export async function put(request) {
     const collection = db.collection("Roadbook");
 
     await collection.updateOne(
-      { dayCounter: roadbook.dayCounter },
+      { dayCounter: roadbook.dayCounter, randos:roadbook.rando },
       {
         $set: {
           day:roadbook.day,

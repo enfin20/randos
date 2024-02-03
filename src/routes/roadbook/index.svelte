@@ -256,8 +256,6 @@
       editDay.finParcoursLng = Number(editDay.finParcoursLng);
       editDay.stepsAnne = Number(editDay.stepsAnne);
       editDay.stepsOlivier = Number(editDay.stepsOlivier);
-      console.info("Update day", editDay);
-      console.info("buttonLabel", buttonLabel);
 
       if (buttonLabel === "Add") {
         console.info("ADD");
@@ -305,7 +303,7 @@
         roadbook = roadbook;
       } else {
         console.info("UPDATE");
-        console.info("roadbook.length", roadbook.length);
+
         // update day
         if (parcours.length > 0) {
           res = await fetch("/MDB/parcours", {
@@ -314,13 +312,13 @@
           });
           new_id = await res.json();
         }
-
         res = await fetch("/MDB/roadbook", {
           method: "PUT",
           body: JSON.stringify(editDay),
         });
 
         //mise à jour du tableau
+
         for (var i = 0; i < roadbook.length; i++) {
           if (roadbook[i].dayCounter === editDay.dayCounter) {
             roadbook[i].day = editDay.day;
@@ -861,7 +859,7 @@
       <div class="w-1/2 px-3 mb-6 md:mb-0">
         <button
           class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          on:click={insertRoadbook}
+          on:click|preventDefault={insertRoadbook}
         >
           {buttonLabel}
         </button>

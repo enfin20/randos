@@ -81,14 +81,14 @@ export async function put(request) {
 
   try {
     const roadbook = JSON.parse(request.body);
-    if (roadbook.key === "") { console.info("roadbook", roadbook) }
     console.info("update", roadbook.dayCounter)
+    console.info("roadbook", roadbook)
     const dbConnection = await connectToDatabase();
     const db = dbConnection.db;
     const collection = db.collection("Roadbook");
 
     await collection.updateOne(
-      { dayCounter: roadbook.dayCounter, randos:roadbook.rando },
+      { dayCounter: roadbook.dayCounter, rando:roadbook.rando },
       {
         $set: {
           day:roadbook.day,

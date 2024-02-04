@@ -150,6 +150,8 @@
         reposIcon,
       ];
       let iconIndex = 0;
+      let tempPopupText = "";
+      let tempPopupTextId = -1;
 
       map = leaflet
         .map(mapElement)
@@ -381,6 +383,15 @@
           );
         } else {
           // zero day, on affiche le(s) jour(s) précédant(s) en plus
+          tempPopupText = "";
+          for (var j = i - 1; j >= 0; j--) {
+            if (roadbook[j].difficulty === 0) {
+              tempPopupText = "<p>" + popupText[j] + "</p>" + tempPopupText;
+            } else {
+              tempPopupTextId = j;
+              j = -1;
+            }
+          }
           markers.push(
             leaflet
               .marker(
@@ -394,7 +405,8 @@
                 }
               )
               .bindPopup(
-                popupText[i - 1] +
+                popupText[tempPopupTextId] +
+                  tempPopupText +
                   "<p><b>Jour " +
                   roadbook[i].dayCounter +
                   " : " +

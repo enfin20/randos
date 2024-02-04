@@ -12,7 +12,7 @@ export async function get(request) {
       filter = {cumul:{$gt:0}, rando:rando}
     }else{filter = {rando:rando}}
     var sort = new Object();
-    sort = {day: Number(s)};
+    sort = {dayCounter: Number(s)};
     const dbConnection = await connectToDatabase();
     const db = dbConnection.db;
     const collection = db.collection("Roadbook");

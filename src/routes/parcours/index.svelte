@@ -109,6 +109,7 @@
     );
     const par = await res.json();
     parcours = await par.parcours;
+    console.info("Parcours load", parcours);
 
     // point initial
     let posId = 0;

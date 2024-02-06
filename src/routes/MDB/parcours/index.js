@@ -11,6 +11,7 @@ export async function get(request) {
     const dbConnection = await connectToDatabase();
     const db = dbConnection.db;
     const collection = db.collection("Parcours");
+    console.info(rando, start, end, freq)
     const parcours = await collection.find({rando: rando,
       $and: [{ pos: { $gt: Number(start) } },
       { pos: { $lte: Number(end) } },

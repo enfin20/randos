@@ -39,12 +39,14 @@
   let imgNewMoodActivate = ["_in", "_in", "_in"];
   // _in rgb(200,225,200)
 
+  var previous_finParcours = 0;
+  var previous_cumul = 0;
+
   onMount(async (promise) => {
     let res = await fetch("/MDB/randos");
     const ran = await res.json();
     randos = await ran.randos;
     currentRando = randos[0].rando;
-    console.info("randos", randos);
     loadTables();
   });
 
@@ -79,21 +81,20 @@
       tempDay.setDate(tempDay.getDate() + 1);
       editDay.day = tempDay.toJSON().slice(0, 10);
       editDay.start = roadbook[dayId].end;
-      editDay.debutParcours = roadbook[dayId].finParcours;
-      editDay.finParcours = editDay.debutParcours;
       editDay.dayCounter = roadbook[dayId].dayCounter + 1;
-      editDay.cumul = roadbook[dayId].cumul || 0;
       editDay.rando = roadbook[dayId].rando;
+      previous_cumul = roadbook[dayId].cumul || 0;
+      previous_finParcours = roadbook[dayId].finParcours;
     } else {
       editDay.day = new Date().toJSON().slice(0, 10);
       editDay.start = "";
-      editDay.debutParcours = 1;
-      editDay.finParcours = 0;
       editDay.dayCounter = 1;
-      editDay.cumul = 0;
       editDay.rando = currentRando;
+      editDay.pos = 1;
     }
-
+    editDay.debutParcours = 1;
+    editDay.finParcours = 0;
+    editDay.cumul = 0;
     editDay.end = "";
     editDay.weather = -1;
     editDay.difficulty = -1;
@@ -112,6 +113,8 @@
     editDay.stepsAnne = 0;
     editDay.stepsOlivier = 0;
     editDay.rupture = false;
+    previous_finParcours = 0;
+    previous_cumul = 0;
 
     parcours = [];
     buttonLabel = "Add";
@@ -187,8 +190,17 @@
   }
 
   export async function loadDay(dayCounter) {
-    console.info("loadDay roadbook.length", roadbook.length);
     for (var i = 0; i < roadbook.length; i++) {
+      if (Number(roadbook[i].dayCounter) === dayCounter - 1) {
+        previous_finParcours = roadbook[i].finParcours;
+        previous_cumul = roadbook[i].cumul;
+        console.info(
+          "previous",
+          dayCounter,
+          previous_cumul,
+          previous_finParcours
+        );
+      }
       if (Number(roadbook[i].dayCounter) === dayCounter) {
         editDay.day = roadbook[i].day;
         editDay.day = [
@@ -210,6 +222,7 @@
         editDay.debutParcours = roadbook[i].debutParcours;
         editDay.debutParcoursLat = roadbook[i].debutParcoursLat;
         editDay.debutParcoursLng = roadbook[i].debutParcoursLng;
+        editDay.cumul = roadbook[i].cumul;
         editDay.dist = roadbook[i].dist;
         editDay.elePos = roadbook[i].elePos;
         editDay.eleNeg = roadbook[i].eleNeg;
@@ -222,8 +235,6 @@
         editDay.rupture = roadbook[i].rupture || false;
       }
     }
-
-    console.info("Load editDay", editDay);
     buttonLabel = "Update";
     //mise à jour des icones
     updateIcons();
@@ -346,7 +357,6 @@
             roadbook[i].stepsOlivier = Number(editDay.stepsOlivier);
           }
         }
-        console.info("roadbook.length after maj", roadbook.length);
       }
     } catch (error) {
       console.info("error", error);
@@ -359,10 +369,15 @@
     let fl_files = evt.target.files; // JS FileList object
     var file = fl_files[0];
     let reader = new FileReader(); // built in API
+    var prev_cumul = previous_cumul;
+    editDay.dist = 0;
+    editDay.eleNeg = 0;
+    editDay.elePos = 0;
+    console.info("parcours upload editDay", editDay);
+    console.info("prev_cumul", prev_cumul, editDay.dist);
     reader.onload = function (progressEvent) {
       // Entire file
       const text = this.result;
-      console.info("parcours upload editDay", editDay);
       var pos = 0;
       var element = "";
       var prev_lat = 0;
@@ -378,8 +393,6 @@
       var lines = text.split("\n");
       var counter = 0;
 
-      var prev_cumul = editDay.cumul || 0;
-      console.info("prev_cumul", prev_cumul);
       for (var i = 0; i < lines.length; i++) {
         if (lines[i].trim().substring(0, 6) === "<trkpt") {
           var editParcours = Object();
@@ -405,6 +418,7 @@
           editParcours.dayCounter = editDay.dayCounter;
           if (counter === 0 && !editDay.rupture) {
             // Premier point de la journéee, ne pas tenir compte du précédent point
+            editDay.debutParcours = previous_finParcours;
             pos = editDay.debutParcours;
             prev_ele = editParcours.ele;
             editParcours.dist = 0;
@@ -465,17 +479,23 @@
       }
 
       editDay.dist += Math.round(dayDist / 100) / 10;
-      editDay.cumul += dayDist;
+      editDay.cumul = prev_cumul;
       editDay.elePos = dayElePos;
       editDay.eleNeg = dayEleNeg;
 
       editDay.finParcours = pos - 1;
       editDay.finParcoursLat = editParcours.lat;
       editDay.finParcoursLng = editParcours.lng;
+      previous_cumul = prev_cumul; // à mettre à jour pour les cas de rupture
+      console.log(
+        "prev, previous, editDay",
+        prev_cumul,
+        previous_cumul,
+        editDay.cumul
+      );
     };
     reader.readAsText(file);
-
-    console.info("editDay", editDay);
+    //
   }
 </script>
 

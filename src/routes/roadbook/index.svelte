@@ -484,8 +484,8 @@
       editDay.eleNeg = dayEleNeg;
 
       editDay.finParcours = pos - 1;
-      editDay.finParcoursLat = editParcours.lat;
-      editDay.finParcoursLng = editParcours.lng;
+      // editDay.finParcoursLat = editParcours.lat;
+      // editDay.finParcoursLng = editParcours.lng;
       previous_cumul = prev_cumul; // à mettre à jour pour les cas de rupture
       console.log(
         "prev, previous, editDay",

@@ -893,7 +893,8 @@
           <tr
             class="align-middle text-center border-collapse border-t-[1px] border-slate-200"
           >
-            <td class="text-left align-middle py-1 ">
+            <td class="text-left align-middle py-1 "
+              >{r.dayCounter} :
               {r.day.substring(6, 8).concat("/").concat(r.day.substring(4, 6))}
             </td>
             <td class="text-left align-middle py-1 px-px ">

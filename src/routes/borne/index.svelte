@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
 
   onMount(async (promise) => {
-    let res = await fetch("/MDB/borne?rando=PCT");
+    let res = await fetch("/MDB/borne?rando=GUILHEM");
     const roa = await res.json();
     roadbook = await roa.parcours;
   });

@@ -86,7 +86,7 @@
     }
     totalDistance = borneSup - borneInf;
     console.info("Bornes", borneInf, borneSup);
-    // pour réduire le nombre de points à récupérer dans la base
+
     let res = await fetch(
       "/MDB/parcours?debutParcours=" + debutParcours + "&finParcours=" + finParcours + "&rando=" + currentRando,
     );
@@ -94,65 +94,31 @@
     parcours = await par.parcours;
     console.info("Parcours load", parcours.length);
 
-    // point initial
-    let posId = 0;
-    let minJ = 1;
-    let tempBorne = 0;
-    let roadbookId = -1;
-
-    distance.push(borneInf);
-    elevation.push(parcours[0].ele);
-
-    for (var i = borneInf + 1; i <= borneSup; i++) {
-      // boucle sur les kms pour entrer l'élévation correspondante
-      posId = 0;
-      //      console.info("POSID-----------", i, posId);
-      for (var j = minJ; j < parcours.length; j++) {
-        // on cherche le point le plus proche de chaque km
-        if (parcours[j].dayCounter === parcours[j - 1].dayCounter) {
-          if (roadbookId > -1) {
-            tempBorne = parcours[j].borne + roadbook[roadbookId].distCumul;
-            //            console.info("j2", parcours[j].dayCounter, roadbook[roadbookId].distCumul, tempBorne);
-          } else {
-            tempBorne = parcours[j].borne;
-            //            console.info("on est d'accord", i, parcours[j].dayCounter, tempBorne);
+    let currentDay = 1;
+    let currentBorne = 0;
+    let currentCumul = 0;
+    for (var i = 0; i < parcours.length; i++) {
+      if (parcours[i].dayCounter != currentDay) {
+        currentDay = parcours[i].dayCounter;
+        currentBorne = 1;
+        for (var j = 0; j < roadbook.length; j++) {
+          if (roadbook[j].dayCounter === currentDay - 1) {
+            currentCumul = roadbook[j].distCumul;
+            j = roadbook.length;
           }
-        } else {
-          for (var k = roadbookId + 1; k < roadbook.length; k++) {
-            if (roadbook[k].dayCounter === parcours[j].dayCounter - 1) {
-              roadbookId = k;
-              tempBorne = parcours[j].borne + roadbook[k].distCumul;
-              k = roadbook.length;
-              /*              console.info(
-                "on change !!!!!!!!!!",
-                parcours[j].dayCounter,
-                roadbookId,
-                roadbook[roadbookId].distCumul,
-                tempBorne,
-              );*/
-            }
-          }
-        }
-        if (tempBorne >= i && tempBorne <= i + 1) {
-          posId = j;
-          minJ = j;
-          j = parcours.length;
-        }
-
-        if (posId > 0) {
-          // point trouvé, on rentre le km et son élévation
-          //          console.info("point trouvé, on rentre le km et son élévation", i, posId);
-          distance.push(i);
-          elevation.push(parcours[posId].ele);
-          j = parcours.length;
         }
       }
+      if (parcours[i].borne === currentBorne) {
+        distance.push(parcours[i].borne + currentCumul);
+        elevation.push(parcours[i].ele);
+        currentBorne++;
+      }
     }
-    console.info("Calculs finis");
+
     for (var j = 0; j < roadbook.length; j++) {
       // pour chaque fin de parcours, on entre le km
       if (roadbook[j].dayCounter >= debutParcours && roadbook[j].dayCounter <= finParcours) {
-        daysFinParcours.push(Math.round(roadbook[j].distCumul) - borneInf);
+        daysFinParcours.push(Math.round(roadbook[j].distCumul, 0) - borneInf);
       }
     }
 

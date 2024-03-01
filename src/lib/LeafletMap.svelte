@@ -55,13 +55,13 @@
     let res = await fetch("/MDB/roadbook?sort=1&map=ok&rando=" + currentRando);
     const roa = await res.json();
     roadbook = await roa.roadbook;
-
+    console.info("roadbook", roadbook);
     for (var i = 0; i < roadbook.length; i++) {
-      if (roadbook[i].debutParcours <= debutParcours) {
-        debutParcours = roadbook[i].debutParcours;
+      if (roadbook[i].dayCounter <= debutParcours) {
+        debutParcours = roadbook[i].dayCounter;
       }
-      if (roadbook[i].finParcours >= finParcours) {
-        finParcours = roadbook[i].finParcours;
+      if (roadbook[i].dayCounter >= finParcours) {
+        finParcours = roadbook[i].dayCounter;
       }
       // gestion des zero days sans balise
       // on affecte la balise du jour précédent de fin de parcours
@@ -86,12 +86,8 @@
       }
     }
 
-    // pour réduire le nombre de points à récupérer dans la base
-    let freq = Math.round(Math.max((finParcours - debutParcours) / 5000, 1), 0);
     res = await fetch(
-      "/MDB/parcours?freq=" +
-        freq +
-        "&debutParcours=" +
+      "/MDB/parcours?debutParcours=" +
         debutParcours +
         "&finParcours=" +
         finParcours +
@@ -320,7 +316,7 @@
             "</p><p>" +
             roadbook[i].detail +
             "</p><p>Cumul : " +
-            Number(Math.round(roadbook[i].cumul / 1000)).toLocaleString("fr") +
+            Number(Math.round(roadbook[i].distCumul)).toLocaleString("fr") +
             " kms " +
             Number(roadbook[i].elePosCumul).toLocaleString("fr") +
             " / " +

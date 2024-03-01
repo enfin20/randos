@@ -8,9 +8,10 @@ export async function get(request) {
     const rando = request.query.get("rando") 
     var filter = new Object()
     // spécifique pour permettre l'affichage de la carte quand le parcours n'est pas terminé
-    if (map === "ok") {
-      filter = {cumul:{$gt:0}, rando:rando}
-    }else{filter = {rando:rando}}
+//    if (map === "ok") {
+//      filter = {cumul:{$gt:0}, rando:rando}
+//    } else { filter = { rando: rando } }
+    filter = {rando:rando}
     var sort = new Object();
     sort = {dayCounter: Number(s)};
     const dbConnection = await connectToDatabase();
@@ -102,14 +103,14 @@ export async function put(request) {
           detail: roadbook.detail,
           summary: roadbook.summary,
           dayCounter:roadbook.dayCounter,
-          debutParcours: roadbook.debutParcours,
-          finParcours: roadbook.finParcours,
+ //         debutParcours: roadbook.debutParcours,
+ //         finParcours: roadbook.finParcours,
           dist: roadbook.dist,
           eleNeg:roadbook.eleNeg,
           elePos: roadbook.elePos,
           stepsAnne: roadbook.stepsAnne,
           stepsOlivier: roadbook.stepsOlivier,
-          cumul:roadbook.cumul,
+ //         cumul:roadbook.cumul,
           rando: roadbook.rando,
           debutParcoursLat: roadbook.debutParcoursLat,
           debutParcoursLng: roadbook.debutParcoursLng,

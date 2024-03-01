@@ -8,16 +8,7 @@
   let totalEleNeg = 0;
   let NbDay = 0;
 
-  let weatherIcon = [
-    "Snow",
-    "Rain",
-    "Fog",
-    "Wind",
-    "Thunder",
-    "Cloud",
-    "SemiSun",
-    "Sun",
-  ];
+  let weatherIcon = ["Snow", "Rain", "Fog", "Wind", "Thunder", "Cloud", "SemiSun", "Sun"];
 
   let nightIcon = ["Star", "Bivouac", "Camp", "Hotel", "Free"];
   let difficultyIcon = ["ZeroDay", "Star", "Star", "Star"];
@@ -51,11 +42,11 @@
     finParcours = 0;
 
     for (var i = 0; i < roadbook.length; i++) {
-      if (roadbook[i].debutParcours <= debutParcours) {
-        debutParcours = roadbook[i].debutParcours;
+      if (roadbook[i].dayCounter <= debutParcours) {
+        debutParcours = roadbook[i].dayCounter;
       }
-      if (roadbook[i].finParcours >= finParcours) {
-        finParcours = roadbook[i].finParcours;
+      if (roadbook[i].dayCounter >= finParcours) {
+        finParcours = roadbook[i].dayCounter;
       }
     }
 
@@ -67,7 +58,6 @@
     let elevation = [];
     let daysFinParcours = [];
     let parcours = [];
-    let freq = 1;
     let borneInf = 0;
     let borneSup = 0;
 
@@ -75,54 +65,48 @@
     totalElePos = 0;
     totalEleNeg = 0;
     NbDay = 0;
+    console.info("debut, fin", debutParcours, finParcours);
     for (var i = 0; i < roadbook.length; i++) {
-      if (roadbook[i].debutParcours === debutParcours) {
+      if (roadbook[i].dayCounter === debutParcours) {
         if (i > 0) {
           borneInf = Math.round(roadbook[i - 1].distCumul);
         }
       }
-      if (roadbook[i].finParcours === finParcours) {
+      if (roadbook[i].dayCounter === finParcours) {
         borneSup = Math.round(roadbook[i].distCumul);
       }
-      if (
-        roadbook[i].debutParcours >= debutParcours &&
-        roadbook[i].finParcours <= finParcours
-      ) {
+      if (roadbook[i].dayCounter >= debutParcours && roadbook[i].dayCounter <= finParcours) {
         totalElePos += roadbook[i].elePos;
         totalEleNeg += roadbook[i].eleNeg;
         NbDay++;
       }
     }
     totalDistance = borneSup - borneInf;
-
+    console.info("Bornes", borneInf, borneSup);
     // pour réduire le nombre de points à récupérer dans la base
-    freq = Math.round(Math.max((finParcours - debutParcours) / 2000, 1), 0);
     let res = await fetch(
-      "/MDB/parcours?freq=" +
-        freq +
-        "&debutParcours=" +
-        debutParcours +
-        "&finParcours=" +
-        finParcours +
-        "&rando=" +
-        currentRando
+      "/MDB/parcours?debutParcours=" + debutParcours + "&finParcours=" + finParcours + "&rando=" + currentRando,
     );
     const par = await res.json();
     parcours = await par.parcours;
-    console.info("Parcours load", parcours);
+    console.info("Parcours load", parcours.length);
 
     // point initial
     let posId = 0;
-    distance.push(Math.round(parcours[0].cumul / 1000, 0));
+    distance.push(borneInf);
     elevation.push(parcours[0].ele);
 
     for (var i = borneInf + 1; i <= borneSup; i++) {
       // boucle sur les kms pour entrer l'élévation correspondante
       posId = 0;
-      for (var j = 1; j < parcours.length; j++) {
+      for (var j = posId + 1; j < parcours.length; j++) {
         // on cherche le point le plus proche de chaque km
-        if (Math.round(parcours[j].cumul / 1000, 0) <= i) {
+        if (
+          Math.round(parcours[j].distCumul / 1000, 0) + borneInf >= i &&
+          Math.round(parcours[j].distCumul / 1000, 0) + borneInf <= i + 1
+        ) {
           posId = j;
+          j = parcours.length;
         }
       }
       if (posId > 0) {
@@ -133,10 +117,7 @@
     }
     for (var j = 0; j < roadbook.length; j++) {
       // pour chaque fin de parcours, on entre le km
-      if (
-        roadbook[j].finParcours >= debutParcours &&
-        roadbook[j].finParcours <= finParcours
-      ) {
+      if (roadbook[j].dayCounter >= debutParcours && roadbook[j].dayCounter <= finParcours) {
         daysFinParcours.push(Math.round(roadbook[j].distCumul) - borneInf);
       }
     }
@@ -228,7 +209,7 @@
       class="text-xs appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
     >
       {#each roadbook as r}
-        <option value={r.debutParcours}>
+        <option value={r.dayCounter}>
           Jour {r.dayCounter} : {r.start}
         </option>
       {/each}
@@ -239,7 +220,7 @@
       class="text-xs appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
     >
       {#each roadbook as r}
-        <option value={r.finParcours}>
+        <option value={r.dayCounter}>
           Jour {r.dayCounter} : {r.end}
         </option>
       {/each}
@@ -247,18 +228,15 @@
   </div>
   <div class="w-full grid grid-cols-1 text-xs">
     <div>
-      Nombre de jours : {NbDay}<br
-      />Distance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {Number(
-        totalDistance
-      ).toLocaleString("fr")} / {Number(
-        Math.round((Number(totalDistance) / Number(NbDay)) * 10) / 10
-      ).toLocaleString("fr")} kms<br />Elévation pos : {Number(
-        totalElePos
-      ).toLocaleString("fr")} / {Math.round(
-        Number(totalElePos) / Number(NbDay)
+      Nombre de jours : {NbDay}<br />Distance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {Number(
+        totalDistance,
+      ).toLocaleString("fr")} / {Number(Math.round((Number(totalDistance) / Number(NbDay)) * 10) / 10).toLocaleString(
+        "fr",
+      )} kms<br />Elévation pos : {Number(totalElePos).toLocaleString("fr")} / {Math.round(
+        Number(totalElePos) / Number(NbDay),
       ).toLocaleString("fr")} m <br />
       Elévation nég : {Number(totalEleNeg).toLocaleString("fr")} / {Math.round(
-        Number(totalEleNeg) / Number(NbDay)
+        Number(totalEleNeg) / Number(NbDay),
       ).toLocaleString("fr")} m
     </div>
   </div>
@@ -271,10 +249,7 @@
         class="w-full md:w-full grid grid-cols-3 md:grid-cols-6 align-middle text-center border-collapse border-t-[1px] border-slate-200"
       >
         <div class="">
-          Jour {r.dayCounter}: {r.day
-            .substring(6, 8)
-            .concat("/")
-            .concat(r.day.substring(4, 6))}
+          Jour {r.dayCounter}: {r.day.substring(6, 8).concat("/").concat(r.day.substring(4, 6))}
         </div>
         <div class="">
           {r.start}
@@ -287,64 +262,32 @@
           kms
         </div>
         <div class="">
-          + {Number(r.elePos).toLocaleString("fr") || 0} / {Number(
-            r.eleNeg
-          ).toLocaleString("fr") || 0} m
+          + {Number(r.elePos).toLocaleString("fr") || 0} / {Number(r.eleNeg).toLocaleString("fr") || 0} m
         </div>
         <div class="">
-          A: {Number(r.stepsAnne || 0).toLocaleString("fr")} - O: {Number(
-            r.stepsOlivier || 0
-          ).toLocaleString("fr")}
+          A: {Number(r.stepsAnne || 0).toLocaleString("fr")} - O: {Number(r.stepsOlivier || 0).toLocaleString("fr")}
         </div>
         <div class="px-2">
-          <img
-            src="/images/{moodIcon[r.mood]}.png"
-            alt=""
-            class="w-[25px] md:w-[30px] inline"
-          />
+          <img src="/images/{moodIcon[r.mood]}.png" alt="" class="w-[25px] md:w-[30px] inline" />
         </div>
         <div class="px-2">
-          <img
-            src="/images/{weatherIcon[r.weather]}.png"
-            alt=""
-            class="w-[25px] md:w-[30px] inline"
-          />
+          <img src="/images/{weatherIcon[r.weather]}.png" alt="" class="w-[25px] md:w-[30px] inline" />
         </div>
         <div class="px-2">
-          <img
-            src="/images/{nightIcon[r.night]}.png"
-            alt=""
-            class="w-[25px] md:w-[30px] inline"
-          />
+          <img src="/images/{nightIcon[r.night]}.png" alt="" class="w-[25px] md:w-[30px] inline" />
         </div>
         <div class="">
           {#each difficultyIcon as di, i}
             {#if i === 0}
               {#if r.difficulty === 0}
-                <img
-                  src="/images/{difficultyIcon[i]}.png"
-                  alt=""
-                  class="w-[15px] md:w-[30px] inline"
-                />
+                <img src="/images/{difficultyIcon[i]}.png" alt="" class="w-[15px] md:w-[30px] inline" />
               {:else}
-                <img
-                  src="/images/{difficultyIcon[i]}_in.png"
-                  alt=""
-                  class="w-[20px] md:w-[30px] inline"
-                />
+                <img src="/images/{difficultyIcon[i]}_in.png" alt="" class="w-[20px] md:w-[30px] inline" />
               {/if}
             {:else if r.difficulty >= i}
-              <img
-                src="/images/{difficultyIcon[i]}.png"
-                alt=""
-                class="w-[20px] md:w-[30px] inline"
-              />
+              <img src="/images/{difficultyIcon[i]}.png" alt="" class="w-[20px] md:w-[30px] inline" />
             {:else}
-              <img
-                src="/images/{difficultyIcon[i]}_in.png"
-                alt=""
-                class="w-[20px] md:w-[30px] inline"
-              />
+              <img src="/images/{difficultyIcon[i]}_in.png" alt="" class="w-[20px] md:w-[30px] inline" />
             {/if}
           {/each}
         </div>
@@ -353,47 +296,23 @@
           {#each starsIcon as si, i}
             {#if i === 0}
               {#if r.landscape === 0}
-                <img
-                  src="/images/{starsIcon[0]}.png"
-                  alt=""
-                  class="w-[20px] md:w-[30px] inline"
-                />
+                <img src="/images/{starsIcon[0]}.png" alt="" class="w-[20px] md:w-[30px] inline" />
               {:else}
-                <img
-                  src="/images/{starsIcon[0]}_in.png"
-                  alt=""
-                  class="w-[20px] md:w-[30px] inline"
-                />
+                <img src="/images/{starsIcon[0]}_in.png" alt="" class="w-[20px] md:w-[30px] inline" />
               {/if}
             {/if}
             {#if i === 1}
               {#if r.landscape === 1}
-                <img
-                  src="/images/{starsIcon[1]}.png"
-                  alt=""
-                  class="w-[20px] md:w-[30px] inline"
-                />
+                <img src="/images/{starsIcon[1]}.png" alt="" class="w-[20px] md:w-[30px] inline" />
               {:else}
-                <img
-                  src="/images/{starsIcon[1]}_in.png"
-                  alt=""
-                  class="w-[20px] md:w-[30px] inline"
-                />
+                <img src="/images/{starsIcon[1]}_in.png" alt="" class="w-[20px] md:w-[30px] inline" />
               {/if}
             {/if}
             {#if i >= 2}
               {#if r.landscape >= i}
-                <img
-                  src="/images/{starsIcon[i]}.png"
-                  alt=""
-                  class="w-[20px] md:w-[30px] inline"
-                />
+                <img src="/images/{starsIcon[i]}.png" alt="" class="w-[20px] md:w-[30px] inline" />
               {:else}
-                <img
-                  src="/images/{starsIcon[i]}_in.png"
-                  alt=""
-                  class="w-[20px] md:w-[30px] inline"
-                />
+                <img src="/images/{starsIcon[i]}_in.png" alt="" class="w-[20px] md:w-[30px] inline" />
               {/if}
             {/if}
           {/each}

@@ -83,8 +83,8 @@
       editDay.start = roadbook[dayId].end;
       editDay.dayCounter = roadbook[dayId].dayCounter + 1;
       editDay.rando = roadbook[dayId].rando;
-      previous_cumul = roadbook[dayId].cumul || 0;
-      previous_finParcours = roadbook[dayId].finParcours;
+      //    previous_cumul = roadbook[dayId].cumul || 0;
+      //  previous_finParcours = roadbook[dayId].finParcours;
     } else {
       editDay.day = new Date().toJSON().slice(0, 10);
       editDay.start = "";
@@ -92,9 +92,9 @@
       editDay.rando = currentRando;
       editDay.pos = 1;
     }
-    editDay.debutParcours = 1;
+    //  editDay.debutParcours = 1;
     editDay.finParcours = 0;
-    editDay.cumul = 0;
+    //  editDay.cumul = 0;
     editDay.end = "";
     editDay.weather = -1;
     editDay.difficulty = -1;
@@ -114,7 +114,7 @@
     editDay.stepsOlivier = 0;
     editDay.rupture = false;
     previous_finParcours = 0;
-    previous_cumul = 0;
+    //  previous_cumul = 0;
 
     parcours = [];
     buttonLabel = "Add";
@@ -191,16 +191,11 @@
 
   export async function loadDay(dayCounter) {
     for (var i = 0; i < roadbook.length; i++) {
-      if (Number(roadbook[i].dayCounter) === dayCounter - 1) {
-        previous_finParcours = roadbook[i].finParcours;
-        previous_cumul = roadbook[i].cumul;
-        console.info(
-          "previous",
-          dayCounter,
-          previous_cumul,
-          previous_finParcours
-        );
-      }
+      //     if (Number(roadbook[i].dayCounter) === dayCounter - 1) {
+      //       previous_finParcours = roadbook[i].finParcours;
+      //      previous_cumul = roadbook[i].cumul;
+      //
+      //    }
       if (Number(roadbook[i].dayCounter) === dayCounter) {
         editDay.day = roadbook[i].day;
         editDay.day = [
@@ -218,15 +213,14 @@
         editDay.dayCounter = roadbook[i].dayCounter;
         editDay.detail = roadbook[i].detail;
         editDay.summary = roadbook[i].summary;
-        editDay.cumul = roadbook[i].cumul;
-        editDay.debutParcours = roadbook[i].debutParcours;
+        //    editDay.cumul = roadbook[i].cumul;
+        //    editDay.debutParcours = roadbook[i].debutParcours;
         editDay.debutParcoursLat = roadbook[i].debutParcoursLat;
         editDay.debutParcoursLng = roadbook[i].debutParcoursLng;
-        editDay.cumul = roadbook[i].cumul;
         editDay.dist = roadbook[i].dist;
         editDay.elePos = roadbook[i].elePos;
         editDay.eleNeg = roadbook[i].eleNeg;
-        editDay.finParcours = roadbook[i].finParcours;
+        //   editDay.finParcours = roadbook[i].finParcours;
         editDay.finParcoursLat = roadbook[i].finParcoursLat;
         editDay.finParcoursLng = roadbook[i].finParcoursLng;
         editDay.rando = roadbook[i].rando;
@@ -255,14 +249,14 @@
       editDay.landscape = Number(editDay.landscape);
       editDay.mood = Number(editDay.mood);
       editDay.dayCounter = Number(editDay.dayCounter);
-      editDay.cumul = Number(editDay.cumul);
-      editDay.debutParcours = Number(editDay.debutParcours);
+      //   editDay.cumul = Number(editDay.cumul);
+      //     editDay.debutParcours = Number(editDay.debutParcours);
       editDay.debutParcoursLat = Number(editDay.debutParcoursLat);
       editDay.debutParcoursLng = Number(editDay.debutParcoursLng);
       editDay.dist = Number(editDay.dist);
       editDay.elePos = Number(editDay.elePos);
       editDay.eleNeg = Number(editDay.eleNeg);
-      editDay.finParcours = Number(editDay.finParcours);
+      //  editDay.finParcours = Number(editDay.finParcours);
       editDay.finParcoursLat = Number(editDay.finParcoursLat);
       editDay.finParcoursLng = Number(editDay.finParcoursLng);
       editDay.stepsAnne = Number(editDay.stepsAnne);
@@ -296,8 +290,8 @@
           detail: editDay.detail,
           summary: editDay.summary,
           dayCounter: editDay.dayCounter,
-          cumul: editDay.cumul,
-          debutParcours: editDay.debutParcours,
+          //     cumul: editDay.cumul,
+          //   debutParcours: editDay.debutParcours,
           debutParcoursLat: editDay.debutParcoursLat,
           debutParcoursLng: editDay.debutParcoursLng,
           dist: editDay.dist,
@@ -342,14 +336,14 @@
             roadbook[i].mood = Number(editDay.mood);
             roadbook[i].detail = editDay.detail;
             roadbook[i].summary = editDay.summary;
-            roadbook[i].cumul = Number(editDay.cumul);
-            roadbook[i].debutParcours = Number(editDay.debutParcours);
+            //      roadbook[i].cumul = Number(editDay.cumul);
+            //      roadbook[i].debutParcours = Number(editDay.debutParcours);
             roadbook[i].debutParcoursLat = Number(editDay.debutParcoursLat);
             roadbook[i].debutParcoursLng = Number(editDay.debutParcoursLng);
             roadbook[i].dist = Number(editDay.dist) || 0;
             roadbook[i].elePos = Number(editDay.elePos) || 0;
             roadbook[i].eleNeg = Number(editDay.eleNeg) || 0;
-            roadbook[i].finParcours = Number(editDay.finParcours);
+            //   roadbook[i].finParcours = Number(editDay.finParcours);
             roadbook[i].finParcoursLat = Number(editDay.finParcoursLat);
             roadbook[i].finParcoursLng = Number(editDay.finParcoursLng);
             roadbook[i].rando = editDay.rando;
@@ -369,12 +363,12 @@
     let fl_files = evt.target.files; // JS FileList object
     var file = fl_files[0];
     let reader = new FileReader(); // built in API
-    var prev_cumul = previous_cumul;
+    //    var prev_cumul = previous_cumul;
     editDay.dist = 0;
     editDay.eleNeg = 0;
     editDay.elePos = 0;
     console.info("parcours upload editDay", editDay);
-    console.info("prev_cumul", prev_cumul, editDay.dist);
+
     reader.onload = function (progressEvent) {
       // Entire file
       const text = this.result;
@@ -418,8 +412,8 @@
           editParcours.dayCounter = editDay.dayCounter;
           if (counter === 0 && !editDay.rupture) {
             // Premier point de la journéee, ne pas tenir compte du précédent point
-            editDay.debutParcours = previous_finParcours;
-            pos = editDay.debutParcours;
+            //         editDay.debutParcours = previous_finParcours;
+            pos = 1; //editDay.debutParcours;
             prev_ele = editParcours.ele;
             editParcours.dist = 0;
             editDay.debutParcoursLat = editParcours.lat;
@@ -447,7 +441,7 @@
               ) || 0;
           }
 
-          editParcours.cumul = prev_cumul + editParcours.dist;
+          //     editParcours.cumul = prev_cumul + editParcours.dist;
           if (editParcours.ele - prev_ele > 0) {
             editParcours.elePos = Math.round(editParcours.ele - prev_ele);
             editParcours.eleNeg = 0;
@@ -465,7 +459,7 @@
           prev_lat = editParcours.lat;
           prev_lng = editParcours.lng;
           prev_ele = editParcours.ele;
-          prev_cumul = editParcours.cumul;
+          //   prev_cumul = editParcours.cumul;
 
           pos++;
           counter++;
@@ -479,20 +473,14 @@
       }
 
       editDay.dist += Math.round(dayDist / 100) / 10;
-      editDay.cumul = prev_cumul;
+      //  editDay.cumul = prev_cumul;
       editDay.elePos = dayElePos;
       editDay.eleNeg = dayEleNeg;
 
       editDay.finParcours = pos - 1;
       // editDay.finParcoursLat = editParcours.lat;
       // editDay.finParcoursLng = editParcours.lng;
-      previous_cumul = prev_cumul; // à mettre à jour pour les cas de rupture
-      console.log(
-        "prev, previous, editDay",
-        prev_cumul,
-        previous_cumul,
-        editDay.cumul
-      );
+      //previous_cumul = prev_cumul; // à mettre à jour pour les cas de rupture
     };
     reader.readAsText(file);
     //

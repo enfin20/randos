@@ -5,19 +5,34 @@ export async function get(request) {
   try {
     const start = request.query.get("debutParcours") || 1;
     const end = request.query.get("finParcours") || 5000000;
-    const freq = request.query.get("freq") || 1
+    var freq =  1
     const rando = request.query.get("rando") 
+    var parcours = []
 
     const dbConnection = await connectToDatabase();
     const db = dbConnection.db;
     const collection = db.collection("Parcours");
-    console.info(rando, start, end, freq)
-    const parcours = await collection.find({rando: rando,
-      $and: [{ pos: { $gt: Number(start) } },
-      { pos: { $lte: Number(end) } },
-        { pos: { $mod: [Number(freq), 0] } }]
-          }).sort({pos:1}).toArray();
-
+ 
+    const parc = await collection.find({rando: rando,
+      $and: [{ dayCounter: { $gte: Number(start) } },
+      { dayCounter: { $lte: Number(end) } } ] //{ pos: { $mod: [Number(freq), 0] } }
+    }).sort({ dayCounter: 1, pos: 1 }).toArray();
+        
+    console.info("parc", parc.length)
+    freq= Math.max(Math.round(parc.length/20000),1)
+    console.info("freq", freq)
+   for (var i = 0; i < parc.length; i++) {
+      if (i > 0) {
+        parc[i].distCumul = parc[i - 1].distCumul + Number(parc[i].dist || 0);
+      } else {
+        parc[0].distCumul = Number(parc[0].dist || 0);
+      }
+      if (i % freq === 0 || parc[i].rupture) {
+        parcours.push(parc[i])
+      }
+    }
+    console.info("parcours", parcours.length)
+    console.info("distmax",parcours[parcours.length-1].distCumul)
     return {
       status: 200,
       body: {
@@ -25,6 +40,7 @@ export async function get(request) {
       },
     };
   } catch (err) {
+    console.info("err", err)
     return {
       status: 500,
       body: {

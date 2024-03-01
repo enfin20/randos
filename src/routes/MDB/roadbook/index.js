@@ -23,7 +23,7 @@ export async function get(request) {
         roadbook[i].dayCounter = i+1
       }
       if (i > 0) {
-        roadbook[i].distCumul = roadbook[i - 1].distCumul + Number(roadbook[i].dist || 0);
+        roadbook[i].distCumul = Math.round(roadbook[i - 1].distCumul + Number(roadbook[i].dist,0) || 0);
         roadbook[i].elePosCumul = roadbook[i - 1].elePosCumul + Number(roadbook[i].elePos || 0);
         roadbook[i].eleNegCumul = roadbook[i - 1].eleNegCumul + Number(roadbook[i].eleNeg || 0);
       } else {

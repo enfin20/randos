@@ -3,52 +3,41 @@ import { Double, ObjectId } from "mongodb";
 
 export async function get(request) {
   try {
-    const start = request.query.get("debutParcours") || 1;
-    const end = request.query.get("finParcours") || 5000000;
-    var freq =  1
+    console.info("borne")
     const rando = request.query.get("rando") 
-    
-    filter = [
-  {
-    $match:
-      {
-        $and:[{dayCounter:{$gte:Number(start)}},{dayCounter:{$lte:Number(end)}} ],
-        rando: rando,
-      },
-  },
-  {
-    $group:
-      {
-        _id: {
-          rando: {
-            rando: "$rando",
-          },
-        },
-        NbPoints: {
-          $count: {},
-        }
-      },
-  },
-    ]
     const dbConnection = await connectToDatabase();
     const db = dbConnection.db;
-    const collCount = db.collection("Parcours");
     const collection = db.collection("Parcours");
-    const NbPoints = await collCount.aggregate(filter).toArray();
+ 
+    const parc = await collection.find({rando: rando}).sort({ dayCounter: 1, pos: 1 }).toArray();
+        
+    console.info("parc", parc.length)
+    let dayCounter = 1
+    let currentBorne =0
+    for (var i = 0; i < parc.length; i++) {
+      if (parc[i].dayCounter === dayCounter) {
+        currentBorne += parc[i].dist
+        parc[i].borne = Math.round(currentBorne / 1000, 0)
+      } else {
+        dayCounter++
+        currentBorne = 0
+        parc[i].borne=0
+      }
+      console.info("result", i, parc[i].dayCounter, parc[i].borne)
 
-    console.info("NbPoints", NbPoints[0].NbPoints)
-    freq= Math.max(Math.round(NbPoints[0].NbPoints/20000),1)
-    console.info("freq", freq)
-
-    const parcours = await collection.find({rando: rando,
-      $and: [{dayCounter: { $gte: Number(start) }},
-      {dayCounter: { $lte: Number(end) }} ,{pos: { $mod: [Number(freq), 0] }}] //{ pos: { $mod: [Number(freq), 0] } }
-    }).sort({ dayCounter: 1, pos: 1 }).toArray();
-    console.info("length", parcours.length)
+          await collection.updateOne(
+      { dayCounter: parc[i].dayCounter, rando:parc[i].rando, pos: parc[i].pos },
+      {
+        $set: {
+          borne:parc[i].borne
+        },
+      }
+    );
+    }
     return {
       status: 200,
       body: {
-        parcours,
+        parc,
       },
     };
   } catch (err) {

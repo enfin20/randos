@@ -65,6 +65,9 @@
     totalElePos = 0;
     totalEleNeg = 0;
     NbDay = 0;
+
+    //   finParcours = 2;
+
     console.info("debut, fin", debutParcours, finParcours);
     for (var i = 0; i < roadbook.length; i++) {
       if (roadbook[i].dayCounter === debutParcours) {
@@ -93,28 +96,59 @@
 
     // point initial
     let posId = 0;
+    let minJ = 1;
+    let tempBorne = 0;
+    let roadbookId = -1;
+
     distance.push(borneInf);
     elevation.push(parcours[0].ele);
 
     for (var i = borneInf + 1; i <= borneSup; i++) {
       // boucle sur les kms pour entrer l'élévation correspondante
       posId = 0;
-      for (var j = posId + 1; j < parcours.length; j++) {
+      //      console.info("POSID-----------", i, posId);
+      for (var j = minJ; j < parcours.length; j++) {
         // on cherche le point le plus proche de chaque km
-        if (
-          Math.round(parcours[j].distCumul / 1000, 0) + borneInf >= i &&
-          Math.round(parcours[j].distCumul / 1000, 0) + borneInf <= i + 1
-        ) {
+        if (parcours[j].dayCounter === parcours[j - 1].dayCounter) {
+          if (roadbookId > -1) {
+            tempBorne = parcours[j].borne + roadbook[roadbookId].distCumul;
+            //            console.info("j2", parcours[j].dayCounter, roadbook[roadbookId].distCumul, tempBorne);
+          } else {
+            tempBorne = parcours[j].borne;
+            //            console.info("on est d'accord", i, parcours[j].dayCounter, tempBorne);
+          }
+        } else {
+          for (var k = roadbookId + 1; k < roadbook.length; k++) {
+            if (roadbook[k].dayCounter === parcours[j].dayCounter - 1) {
+              roadbookId = k;
+              tempBorne = parcours[j].borne + roadbook[k].distCumul;
+              k = roadbook.length;
+              /*              console.info(
+                "on change !!!!!!!!!!",
+                parcours[j].dayCounter,
+                roadbookId,
+                roadbook[roadbookId].distCumul,
+                tempBorne,
+              );*/
+            }
+          }
+        }
+        if (tempBorne >= i && tempBorne <= i + 1) {
           posId = j;
+          minJ = j;
+          j = parcours.length;
+        }
+
+        if (posId > 0) {
+          // point trouvé, on rentre le km et son élévation
+          //          console.info("point trouvé, on rentre le km et son élévation", i, posId);
+          distance.push(i);
+          elevation.push(parcours[posId].ele);
           j = parcours.length;
         }
       }
-      if (posId > 0) {
-        // point trouvé, on rentre le km et son élévation
-        distance.push(i);
-        elevation.push(parcours[posId].ele);
-      }
     }
+    console.info("Calculs finis");
     for (var j = 0; j < roadbook.length; j++) {
       // pour chaque fin de parcours, on entre le km
       if (roadbook[j].dayCounter >= debutParcours && roadbook[j].dayCounter <= finParcours) {

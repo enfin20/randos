@@ -9,26 +9,8 @@
   var editDay = Object();
   let rupture = false;
 
-  let weatherIcon = [
-    "Snow",
-    "Rain",
-    "Fog",
-    "Wind",
-    "Thunder",
-    "Cloud",
-    "SemiSun",
-    "Sun",
-  ];
-  let imgNewWeatherActivate = [
-    "_in",
-    "_in",
-    "_in",
-    "_in",
-    "_in",
-    "_in",
-    "_in",
-    "_in",
-  ];
+  let weatherIcon = ["Snow", "Rain", "Fog", "Wind", "Thunder", "Cloud", "SemiSun", "Sun"];
+  let imgNewWeatherActivate = ["_in", "_in", "_in", "_in", "_in", "_in", "_in", "_in"];
   let nightIcon = ["Star", "Bivouac", "Camp", "Hotel", "Free"];
   let imgNewNightActivate = ["_in", "_in", "_in", "_in", "_in"];
   let difficultyIcon = ["ZeroDay", "Star", "Star", "Star"];
@@ -71,20 +53,13 @@
 
     if (dayId > -1) {
       editDay.day = roadbook[dayId].day;
-      // editDay.day.setDate(editDay.day, getDate() + 1);
-      editDay.day = [
-        editDay.day.substring(0, 4),
-        editDay.day.substring(4, 6),
-        editDay.day.substring(6, 8),
-      ].join("-");
+      editDay.day = [editDay.day.substring(0, 4), editDay.day.substring(4, 6), editDay.day.substring(6, 8)].join("-");
       var tempDay = new Date(Date.parse(editDay.day));
       tempDay.setDate(tempDay.getDate() + 1);
       editDay.day = tempDay.toJSON().slice(0, 10);
       editDay.start = roadbook[dayId].end;
       editDay.dayCounter = roadbook[dayId].dayCounter + 1;
       editDay.rando = roadbook[dayId].rando;
-      //    previous_cumul = roadbook[dayId].cumul || 0;
-      //  previous_finParcours = roadbook[dayId].finParcours;
     } else {
       editDay.day = new Date().toJSON().slice(0, 10);
       editDay.start = "";
@@ -92,9 +67,7 @@
       editDay.rando = currentRando;
       editDay.pos = 1;
     }
-    //  editDay.debutParcours = 1;
     editDay.finParcours = 0;
-    //  editDay.cumul = 0;
     editDay.end = "";
     editDay.weather = -1;
     editDay.difficulty = -1;
@@ -114,7 +87,6 @@
     editDay.stepsOlivier = 0;
     editDay.rupture = false;
     previous_finParcours = 0;
-    //  previous_cumul = 0;
 
     parcours = [];
     buttonLabel = "Add";
@@ -191,18 +163,9 @@
 
   export async function loadDay(dayCounter) {
     for (var i = 0; i < roadbook.length; i++) {
-      //     if (Number(roadbook[i].dayCounter) === dayCounter - 1) {
-      //       previous_finParcours = roadbook[i].finParcours;
-      //      previous_cumul = roadbook[i].cumul;
-      //
-      //    }
       if (Number(roadbook[i].dayCounter) === dayCounter) {
         editDay.day = roadbook[i].day;
-        editDay.day = [
-          editDay.day.substring(0, 4),
-          editDay.day.substring(4, 6),
-          editDay.day.substring(6, 8),
-        ].join("-");
+        editDay.day = [editDay.day.substring(0, 4), editDay.day.substring(4, 6), editDay.day.substring(6, 8)].join("-");
         editDay.start = roadbook[i].start;
         editDay.end = roadbook[i].end;
         editDay.weather = roadbook[i].weather;
@@ -213,14 +176,11 @@
         editDay.dayCounter = roadbook[i].dayCounter;
         editDay.detail = roadbook[i].detail;
         editDay.summary = roadbook[i].summary;
-        //    editDay.cumul = roadbook[i].cumul;
-        //    editDay.debutParcours = roadbook[i].debutParcours;
         editDay.debutParcoursLat = roadbook[i].debutParcoursLat;
         editDay.debutParcoursLng = roadbook[i].debutParcoursLng;
         editDay.dist = roadbook[i].dist;
         editDay.elePos = roadbook[i].elePos;
         editDay.eleNeg = roadbook[i].eleNeg;
-        //   editDay.finParcours = roadbook[i].finParcours;
         editDay.finParcoursLat = roadbook[i].finParcoursLat;
         editDay.finParcoursLng = roadbook[i].finParcoursLng;
         editDay.rando = roadbook[i].rando;
@@ -249,14 +209,10 @@
       editDay.landscape = Number(editDay.landscape);
       editDay.mood = Number(editDay.mood);
       editDay.dayCounter = Number(editDay.dayCounter);
-      //   editDay.cumul = Number(editDay.cumul);
-      //     editDay.debutParcours = Number(editDay.debutParcours);
       editDay.debutParcoursLat = Number(editDay.debutParcoursLat);
       editDay.debutParcoursLng = Number(editDay.debutParcoursLng);
       editDay.dist = Number(editDay.dist);
       editDay.elePos = Number(editDay.elePos);
-      editDay.eleNeg = Number(editDay.eleNeg);
-      //  editDay.finParcours = Number(editDay.finParcours);
       editDay.finParcoursLat = Number(editDay.finParcoursLat);
       editDay.finParcoursLng = Number(editDay.finParcoursLng);
       editDay.stepsAnne = Number(editDay.stepsAnne);
@@ -290,8 +246,6 @@
           detail: editDay.detail,
           summary: editDay.summary,
           dayCounter: editDay.dayCounter,
-          //     cumul: editDay.cumul,
-          //   debutParcours: editDay.debutParcours,
           debutParcoursLat: editDay.debutParcoursLat,
           debutParcoursLng: editDay.debutParcoursLng,
           dist: editDay.dist,
@@ -336,14 +290,11 @@
             roadbook[i].mood = Number(editDay.mood);
             roadbook[i].detail = editDay.detail;
             roadbook[i].summary = editDay.summary;
-            //      roadbook[i].cumul = Number(editDay.cumul);
-            //      roadbook[i].debutParcours = Number(editDay.debutParcours);
             roadbook[i].debutParcoursLat = Number(editDay.debutParcoursLat);
             roadbook[i].debutParcoursLng = Number(editDay.debutParcoursLng);
             roadbook[i].dist = Number(editDay.dist) || 0;
             roadbook[i].elePos = Number(editDay.elePos) || 0;
             roadbook[i].eleNeg = Number(editDay.eleNeg) || 0;
-            //   roadbook[i].finParcours = Number(editDay.finParcours);
             roadbook[i].finParcoursLat = Number(editDay.finParcoursLat);
             roadbook[i].finParcoursLng = Number(editDay.finParcoursLng);
             roadbook[i].rando = editDay.rando;
@@ -363,11 +314,10 @@
     let fl_files = evt.target.files; // JS FileList object
     var file = fl_files[0];
     let reader = new FileReader(); // built in API
-    //    var prev_cumul = previous_cumul;
-    editDay.dist = 0;
+    //    editDay.dist = 0;
     editDay.eleNeg = 0;
     editDay.elePos = 0;
-    console.info("parcours upload editDay", editDay);
+    console.info("parcours upload editDay", editDay.rupture);
 
     reader.onload = function (progressEvent) {
       // Entire file
@@ -400,9 +350,7 @@
             .replace('lat="', "")
             .replace('" lon="', "/")
             .replace('">', "/")
-            .concat(
-              lines[i + 1].trim().replace("<ele>", "").replace("</ele>", "")
-            );
+            .concat(lines[i + 1].trim().replace("<ele>", "").replace("</ele>", ""));
 
           data = element.split("/");
           editParcours.rando = editDay.rando;
@@ -412,17 +360,20 @@
           editParcours.dayCounter = editDay.dayCounter;
           if (counter === 0 && !editDay.rupture) {
             // Premier point de la journéee, ne pas tenir compte du précédent point
-            //         editDay.debutParcours = previous_finParcours;
-            pos = 1; //editDay.debutParcours;
+            pos = 1;
             prev_ele = editParcours.ele;
             editParcours.dist = 0;
+            editParcours.borne = 0;
+            editDay.dist = 0;
             editDay.debutParcoursLat = editParcours.lat;
             editDay.debutParcoursLng = editParcours.lng;
           } else if (counter === 0 && editDay.rupture) {
             // Premier point des chargements suivant de la même journée
-            pos = editDay.finParcours;
+            dayDist = editDay.dist * 1000;
+            pos = editDay.finParcours + 1;
             prev_ele = editParcours.ele;
             editParcours.dist = 0;
+            editParcours.borne = dayDist;
             editDay.rupture = false;
             dayElePos = editDay.elePos;
             dayEleNeg = editDay.eleNeg;
@@ -430,18 +381,17 @@
             editParcours.dist =
               Math.round(
                 Math.acos(
-                  Math.sin((prev_lat * pi) / 180) *
-                    Math.sin((editParcours.lat * pi) / 180) +
+                  Math.sin((prev_lat * pi) / 180) * Math.sin((editParcours.lat * pi) / 180) +
                     Math.cos((prev_lat * pi) / 180) *
                       Math.cos((editParcours.lat * pi) / 180) *
-                      Math.cos(((prev_lng - editParcours.lng) * pi) / 180)
+                      Math.cos(((prev_lng - editParcours.lng) * pi) / 180),
                 ) *
                   6371 *
-                  1000
+                  1000,
               ) || 0;
           }
-
-          //     editParcours.cumul = prev_cumul + editParcours.dist;
+          dayDist += editParcours.dist;
+          editParcours.borne = Math.round(dayDist / 1000, 0);
           if (editParcours.ele - prev_ele > 0) {
             editParcours.elePos = Math.round(editParcours.ele - prev_ele);
             editParcours.eleNeg = 0;
@@ -450,17 +400,13 @@
             editParcours.elePos = 0;
           }
 
-          dayDist += editParcours.dist;
           editParcours.pos = pos;
           dayElePos += editParcours.elePos;
           dayEleNeg += editParcours.eleNeg;
           parcours.push(editParcours);
-
           prev_lat = editParcours.lat;
           prev_lng = editParcours.lng;
           prev_ele = editParcours.ele;
-          //   prev_cumul = editParcours.cumul;
-
           pos++;
           counter++;
         }
@@ -471,16 +417,13 @@
         editDay.rupture = rupture;
         rupture = false;
       }
-
-      editDay.dist += Math.round(dayDist / 100) / 10;
-      //  editDay.cumul = prev_cumul;
+      console.info("dayDist", dayDist, pos);
+      editDay.dist = Math.round(dayDist / 100) / 10;
       editDay.elePos = dayElePos;
       editDay.eleNeg = dayEleNeg;
 
       editDay.finParcours = pos - 1;
-      // editDay.finParcoursLat = editParcours.lat;
-      // editDay.finParcoursLng = editParcours.lng;
-      //previous_cumul = prev_cumul; // à mettre à jour pour les cas de rupture
+      console.info("editDay", editDay.dist, editDay.finParcours);
     };
     reader.readAsText(file);
     //
@@ -504,10 +447,7 @@
     </div>
     <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">
       <div class="w-1/3 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Jour
         </label>
         <input
@@ -518,10 +458,7 @@
       </div>
 
       <div class="w-full md:w-2/3 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           trace
         </label>
         <input
@@ -540,10 +477,7 @@
     </div>
     <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">
       <div class="w-1/3 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           distance
         </label>
         <input
@@ -553,10 +487,7 @@
         />
       </div>
       <div class="w-1/3 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Positif
         </label>
         <input
@@ -566,10 +497,7 @@
         />
       </div>
       <div class="w-1/3 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Negatif</label
         >
         <input
@@ -581,10 +509,7 @@
     </div>
     <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">
       <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Date
         </label>
         <input
@@ -594,10 +519,7 @@
         />
       </div>
       <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Début
         </label>
         <input
@@ -607,10 +529,7 @@
         />
       </div>
       <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Fin
         </label>
         <input
@@ -623,10 +542,7 @@
     <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">
       <div class="w-0 md:w-1/3  px-3 mb-6 md:mb-0" />
       <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Fin lat.
         </label>
         <input
@@ -636,10 +552,7 @@
         />
       </div>
       <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Fin lng.
         </label>
         <input
@@ -652,10 +565,7 @@
 
     <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">
       <div class="w-1/2 md:w-1/3  px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Pas A.
         </label>
         <input
@@ -665,10 +575,7 @@
         />
       </div>
       <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Pas O.
         </label>
         <input
@@ -678,10 +585,7 @@
         />
       </div>
       <div class="w-1/2 md:w-1/3 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Randonnée
         </label>
         <input
@@ -694,10 +598,7 @@
 
     <div class=" w-full md:w-1/2 flex flex-wrap -mx-3 mb-6">
       <div class="w-full px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Météo
         </label>
         {#each weatherIcon as wi, i}
@@ -714,19 +615,12 @@
             for="r_weather{i}"
             class="select-none cursor-pointer  py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out  "
           >
-            <img
-              src="/images/{wi}{imgNewWeatherActivate[i]}.png"
-              alt=""
-              class="w-[30px] inline"
-            /></label
+            <img src="/images/{wi}{imgNewWeatherActivate[i]}.png" alt="" class="w-[30px] inline" /></label
           >
         {/each}
       </div>
       <div class="w-full px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Difficulté
         </label>
         {#each difficultyIcon as di, i}
@@ -743,19 +637,12 @@
             for="r_difficulty{i}"
             class="select-none cursor-pointer py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out "
           >
-            <img
-              src="/images/{di}{imgNewDifficultyActivate[i]}.png"
-              alt=""
-              class="w-[40px] inline"
-            /></label
+            <img src="/images/{di}{imgNewDifficultyActivate[i]}.png" alt="" class="w-[40px] inline" /></label
           >
         {/each}
       </div>
       <div class="w-full px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Nuit
         </label>
         {#each nightIcon as ni, i}
@@ -772,19 +659,12 @@
             for="r_night{i}"
             class="select-none cursor-pointer py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out "
           >
-            <img
-              src="/images/{ni}{imgNewNightActivate[i]}.png"
-              alt=""
-              class="w-[40px] inline"
-            /></label
+            <img src="/images/{ni}{imgNewNightActivate[i]}.png" alt="" class="w-[40px] inline" /></label
           >
         {/each}
       </div>
       <div class="w-full px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Paysage
         </label>
         {#each starsIcon as si, i}
@@ -801,19 +681,12 @@
             for="r_landscape{i}"
             class="select-none cursor-pointer py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out "
           >
-            <img
-              src="/images/{si}{imgNewLandscapeActivate[i]}.png"
-              alt=""
-              class="w-[40px] inline"
-            /></label
+            <img src="/images/{si}{imgNewLandscapeActivate[i]}.png" alt="" class="w-[40px] inline" /></label
           >
         {/each}
       </div>
       <div class="w-full px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Humeur
         </label>
         {#each moodIcon as mi, i}
@@ -830,19 +703,12 @@
             for="r_mood{i}"
             class="select-none cursor-pointer py-1 px-1 font-bold text-slate-400 transition-colors duration-200 ease-in-out "
           >
-            <img
-              src="/images/{mi}{imgNewMoodActivate[i]}.png"
-              alt=""
-              class="w-[40px] inline"
-            /></label
+            <img src="/images/{mi}{imgNewMoodActivate[i]}.png" alt="" class="w-[40px] inline" /></label
           >
         {/each}
       </div>
       <div class="w-full px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Résumé
         </label>
         <textarea
@@ -852,10 +718,7 @@
         />
       </div>
       <div class="w-full px-3 mb-6 md:mb-3">
-        <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          for="grid-first-name"
-        >
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Détails
         </label>
         <textarea
@@ -878,110 +741,56 @@
     <table id="rdb" class="w-full text-xs text-gray-500 bg-white">
       <tbody class="">
         {#each roadbook as r}
-          <tr
-            class="align-middle text-center border-collapse border-t-[1px] border-slate-200"
-          >
+          <tr class="align-middle text-center border-collapse border-t-[1px] border-slate-200">
             <td class="text-left align-middle py-1 "
               >{r.dayCounter} :
               {r.day.substring(6, 8).concat("/").concat(r.day.substring(4, 6))}
             </td>
             <td class="text-left align-middle py-1 px-px ">
-              <img
-                src="/images/{moodIcon[r.mood]}.png"
-                alt=""
-                class="w-[25px] md:w-[30px] inline"
-              />
+              <img src="/images/{moodIcon[r.mood]}.png" alt="" class="w-[25px] md:w-[30px] inline" />
             </td>
             <td class="text-left align-middle py-1 px-px ">
-              <img
-                src="/images/{weatherIcon[r.weather]}.png"
-                alt=""
-                class="w-[25px] md:w-[30px] inline"
-              />
+              <img src="/images/{weatherIcon[r.weather]}.png" alt="" class="w-[25px] md:w-[30px] inline" />
             </td>
             <td class="text-left align-middle py-1 px-px ">
               {#each difficultyIcon as di, i}
                 {#if i === 0}
                   {#if r.difficulty === 0}
-                    <img
-                      src="/images/{difficultyIcon[i]}.png"
-                      alt=""
-                      class="w-[20px] md:w-[30px] inline"
-                    />
+                    <img src="/images/{difficultyIcon[i]}.png" alt="" class="w-[20px] md:w-[30px] inline" />
                   {:else}
-                    <img
-                      src="/images/{difficultyIcon[i]}_in.png"
-                      alt=""
-                      class="w-[20px] md:w-[30px] inline"
-                    />
+                    <img src="/images/{difficultyIcon[i]}_in.png" alt="" class="w-[20px] md:w-[30px] inline" />
                   {/if}
                 {:else if r.difficulty >= i}
-                  <img
-                    src="/images/{difficultyIcon[i]}.png"
-                    alt=""
-                    class="w-[20px] md:w-[30px] inline"
-                  />
+                  <img src="/images/{difficultyIcon[i]}.png" alt="" class="w-[20px] md:w-[30px] inline" />
                 {:else}
-                  <img
-                    src="/images/{difficultyIcon[i]}_in.png"
-                    alt=""
-                    class="w-[20px] md:w-[30px] inline"
-                  />
+                  <img src="/images/{difficultyIcon[i]}_in.png" alt="" class="w-[20px] md:w-[30px] inline" />
                 {/if}
               {/each}
             </td>
             <td class="text-left align-middle py-1  px-px ">
-              <img
-                src="/images/{nightIcon[r.night]}.png"
-                alt=""
-                class="w-[25px] md:w-[30px] inline"
-              />
+              <img src="/images/{nightIcon[r.night]}.png" alt="" class="w-[25px] md:w-[30px] inline" />
             </td>
             <td class="text-left align-middle py-1 px-px ">
               {#each starsIcon as si, i}
                 {#if i === 0}
                   {#if r.landscape === 0}
-                    <img
-                      src="/images/{starsIcon[0]}.png"
-                      alt=""
-                      class="w-[20px] md:w-[30px] inline"
-                    />
+                    <img src="/images/{starsIcon[0]}.png" alt="" class="w-[20px] md:w-[30px] inline" />
                   {:else}
-                    <img
-                      src="/images/{starsIcon[0]}_in.png"
-                      alt=""
-                      class="w-[20px] md:w-[30px] inline"
-                    />
+                    <img src="/images/{starsIcon[0]}_in.png" alt="" class="w-[20px] md:w-[30px] inline" />
                   {/if}
                 {/if}
                 {#if i === 1}
                   {#if r.landscape === 1}
-                    <img
-                      src="/images/{starsIcon[1]}.png"
-                      alt=""
-                      class="w-[20px] md:w-[30px] inline"
-                    />
+                    <img src="/images/{starsIcon[1]}.png" alt="" class="w-[20px] md:w-[30px] inline" />
                   {:else}
-                    <img
-                      src="/images/{starsIcon[1]}_in.png"
-                      alt=""
-                      class="w-[20px] md:w-[30px] inline"
-                    />
+                    <img src="/images/{starsIcon[1]}_in.png" alt="" class="w-[20px] md:w-[30px] inline" />
                   {/if}
                 {/if}
                 {#if i >= 2}
                   {#if r.landscape >= i}
-                    <img
-                      src="/images/{starsIcon[i]}.png"
-                      alt=""
-                      class="w-[20px] md:w-[30px] inline"
-                    />
+                    <img src="/images/{starsIcon[i]}.png" alt="" class="w-[20px] md:w-[30px] inline" />
                   {:else}
-                    <img
-                      src="/images/{starsIcon[i]}_in.png"
-                      alt=""
-                      class="w-[20px] md:w-[30px] inline"
-                    />
+                    <img src="/images/{starsIcon[i]}_in.png" alt="" class="w-[20px] md:w-[30px] inline" />
                   {/if}
                 {/if}
               {/each}

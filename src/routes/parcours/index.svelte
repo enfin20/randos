@@ -99,6 +99,7 @@
     let currentCumul = 0;
     for (var i = 0; i < parcours.length; i++) {
       if (parcours[i].dayCounter != currentDay) {
+        // nouvelle journée
         currentDay = parcours[i].dayCounter;
         currentBorne = 1;
         for (var j = 0; j < roadbook.length; j++) {

@@ -1,15 +1,6 @@
 <script>
   import { onMount, onDestroy } from "svelte";
-  let weatherIcon = [
-    "Snow",
-    "Rain",
-    "Fog",
-    "Wind",
-    "Thunder",
-    "Cloud",
-    "SemiSun",
-    "Sun",
-  ];
+  let weatherIcon = ["Snow", "Rain", "Fog", "Wind", "Thunder", "Cloud", "SemiSun", "Sun"];
   let difficultyIcon = ["ZeroDay", "Star", "Star", "Star"];
   let starIcon = ["Ugly", "Soso", "Star", "Star", "Star"];
   let moodIcon = ["Sad", "Neutral", "Happy"];
@@ -65,17 +56,9 @@
       }
       // gestion des zero days sans balise
       // on affecte la balise du jour précédent de fin de parcours
-      if (
-        Number(roadbook[i].finParcoursLat) +
-          Number(roadbook[i].finParcoursLng) ===
-        0
-      ) {
+      if (Number(roadbook[i].finParcoursLat) + Number(roadbook[i].finParcoursLng) === 0) {
         for (var j = i - 1; j >= 0; j--) {
-          if (
-            Number(roadbook[j].finParcoursLat) +
-              Number(roadbook[j].finParcoursLng) !=
-            0
-          ) {
+          if (Number(roadbook[j].finParcoursLat) + Number(roadbook[j].finParcoursLng) != 0) {
             roadbook[i].debutParcoursLat = Number(roadbook[j].finParcoursLat);
             roadbook[i].debutParcoursLng = Number(roadbook[j].finParcoursLng);
             roadbook[i].finParcoursLat = Number(roadbook[j].finParcoursLat);
@@ -87,12 +70,7 @@
     }
 
     res = await fetch(
-      "/MDB/parcours?debutParcours=" +
-        debutParcours +
-        "&finParcours=" +
-        finParcours +
-        "&rando=" +
-        currentRando
+      "/MDB/parcours?debutParcours=" + debutParcours + "&finParcours=" + finParcours + "&rando=" + currentRando,
     );
     const par = await res.json();
     parcours = await par.parcours;
@@ -137,14 +115,7 @@
         popupAnchor: [0, -32],
       });
 
-      var typeIcons = [
-        starsIcon,
-        bivouacIcon,
-        campIcon,
-        hotelIcon,
-        freeIcon,
-        reposIcon,
-      ];
+      var typeIcons = [starsIcon, bivouacIcon, campIcon, hotelIcon, freeIcon, reposIcon];
       let iconIndex = 0;
       let tempPopupText = "";
       let tempPopupTextId = -1;
@@ -154,15 +125,11 @@
         .setView(
           [
             Number(roadbook[0].debutParcoursLat) +
-              (Number(roadbook[roadbook.length - 1].finParcoursLat) -
-                Number(roadbook[0].debutParcoursLat)) /
-                2,
+              (Number(roadbook[roadbook.length - 1].finParcoursLat) - Number(roadbook[0].debutParcoursLat)) / 2,
             Number(roadbook[0].debutParcoursLng) +
-              (Number(roadbook[roadbook.length - 1].finParcoursLng) -
-                Number(roadbook[0].debutParcoursLng)) /
-                2,
+              (Number(roadbook[roadbook.length - 1].finParcoursLng) - Number(roadbook[0].debutParcoursLng)) / 2,
           ],
-          14
+          14,
         );
 
       for (var i = 0; i < parcours.length; i++) {
@@ -191,30 +158,21 @@
       leaflet.polyline(latlngs, { color: "blue" }).addTo(map);
       //'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
       leaflet
-        .tileLayer(
-          "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.{ext}",
-          {
-            minZoom: 0,
-            maxZoom: 20,
-            attribution:
-              '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            ext: "png",
-          }
-        )
+        .tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+          minZoom: 0,
+          maxZoom: 20,
+          attribution:
+            'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+          ext: "png",
+        })
         .addTo(map);
       var markers = [];
 
       markers.push(
-        leaflet.marker(
-          [
-            Number(roadbook[0].debutParcoursLat),
-            Number(roadbook[0].debutParcoursLng),
-          ],
-          {
-            title: "départ jour " + roadbook[0].dayCounter,
-            icon: typeIcons[iconIndex],
-          }
-        )
+        leaflet.marker([Number(roadbook[0].debutParcoursLat), Number(roadbook[0].debutParcoursLng)], {
+          title: "départ jour " + roadbook[0].dayCounter,
+          icon: typeIcons[iconIndex],
+        }),
       );
 
       for (var i = 0; i < roadbook.length; i++) {
@@ -222,27 +180,15 @@
         for (var j = 0; j < difficultyIcon.length; j++) {
           if (j === 0) {
             if (roadbook[i].difficulty === 0) {
-              diffIcons =
-                "<img src='/images/" +
-                difficultyIcon[0] +
-                ".png' class='w-[30px] inline' />";
+              diffIcons = "<img src='/images/" + difficultyIcon[0] + ".png' class='w-[30px] inline' />";
             } else {
-              diffIcons =
-                "<img src='/images/" +
-                difficultyIcon[0] +
-                "_in.png' class='w-[30px] inline' />";
+              diffIcons = "<img src='/images/" + difficultyIcon[0] + "_in.png' class='w-[30px] inline' />";
             }
           } else {
             if (roadbook[i].difficulty >= j) {
-              diffIcons +=
-                "<img src='/images/" +
-                difficultyIcon[j] +
-                ".png' class='w-[30px] inline' />";
+              diffIcons += "<img src='/images/" + difficultyIcon[j] + ".png' class='w-[30px] inline' />";
             } else {
-              diffIcons +=
-                "<img src='/images/" +
-                difficultyIcon[j] +
-                "_in.png' class='w-[30px] inline' />";
+              diffIcons += "<img src='/images/" + difficultyIcon[j] + "_in.png' class='w-[30px] inline' />";
             }
           }
         }
@@ -250,41 +196,23 @@
         for (var j = 0; j < starIcon.length; j++) {
           if (j === 0) {
             if (roadbook[i].landscape === 0) {
-              landscapeIcons =
-                "<img src='/images/" +
-                starIcon[0] +
-                ".png' class='w-[30px] inline' />";
+              landscapeIcons = "<img src='/images/" + starIcon[0] + ".png' class='w-[30px] inline' />";
             } else {
-              landscapeIcons =
-                "<img src='/images/" +
-                starIcon[0] +
-                "_in.png' class='w-[30px] inline' />";
+              landscapeIcons = "<img src='/images/" + starIcon[0] + "_in.png' class='w-[30px] inline' />";
             }
           }
           if (j === 1) {
             if (roadbook[i].landscape === 1) {
-              landscapeIcons +=
-                "<img src='/images/" +
-                starIcon[1] +
-                ".png' class='w-[30px] inline' />";
+              landscapeIcons += "<img src='/images/" + starIcon[1] + ".png' class='w-[30px] inline' />";
             } else {
-              landscapeIcons +=
-                "<img src='/images/" +
-                starIcon[1] +
-                "_in.png' class='w-[30px] inline' />";
+              landscapeIcons += "<img src='/images/" + starIcon[1] + "_in.png' class='w-[30px] inline' />";
             }
           }
           if (j >= 2) {
             if (roadbook[i].landscape >= j) {
-              landscapeIcons +=
-                "<img src='/images/" +
-                starIcon[j] +
-                ".png' class='w-[30px] inline' />";
+              landscapeIcons += "<img src='/images/" + starIcon[j] + ".png' class='w-[30px] inline' />";
             } else {
-              landscapeIcons +=
-                "<img src='/images/" +
-                starIcon[j] +
-                "_in.png' class='w-[30px] inline' />";
+              landscapeIcons += "<img src='/images/" + starIcon[j] + "_in.png' class='w-[30px] inline' />";
             }
           }
         }
@@ -321,7 +249,7 @@
             Number(roadbook[i].elePosCumul).toLocaleString("fr") +
             " / " +
             Number(roadbook[i].eleNegCumul).toLocaleString("fr") +
-            " m</p>"
+            " m</p>",
         );
 
         // on détermine si il s'agit d'un zero day
@@ -338,44 +266,26 @@
           for (var j = 0; j < difficultyIcon.length; j++) {
             if (j === 0) {
               if (roadbook[i].difficulty === 0) {
-                diffIcons =
-                  "<img src='/images/" +
-                  difficultyIcon[0] +
-                  ".png' class='w-[30px] inline' />";
+                diffIcons = "<img src='/images/" + difficultyIcon[0] + ".png' class='w-[30px] inline' />";
               } else {
-                diffIcons =
-                  "<img src='/images/" +
-                  difficultyIcon[0] +
-                  "_in.png' class='w-[30px] inline' />";
+                diffIcons = "<img src='/images/" + difficultyIcon[0] + "_in.png' class='w-[30px] inline' />";
               }
             } else {
               if (roadbook[i].difficulty >= j) {
-                diffIcons +=
-                  "<img src='/images/" +
-                  difficultyIcon[j] +
-                  ".png' class='w-[30px] inline' />";
+                diffIcons += "<img src='/images/" + difficultyIcon[j] + ".png' class='w-[30px] inline' />";
               } else {
-                diffIcons +=
-                  "<img src='/images/" +
-                  difficultyIcon[j] +
-                  "_in.png' class='w-[30px] inline' />";
+                diffIcons += "<img src='/images/" + difficultyIcon[j] + "_in.png' class='w-[30px] inline' />";
               }
             }
           }
 
           markers.push(
             leaflet
-              .marker(
-                [
-                  Number(roadbook[i].finParcoursLat),
-                  Number(roadbook[i].finParcoursLng),
-                ],
-                {
-                  title: "Arrivée jour " + roadbook[i].dayCounter,
-                  icon: typeIcons[iconIndex],
-                }
-              )
-              .bindPopup(popupText[i], customOptions)
+              .marker([Number(roadbook[i].finParcoursLat), Number(roadbook[i].finParcoursLng)], {
+                title: "Arrivée jour " + roadbook[i].dayCounter,
+                icon: typeIcons[iconIndex],
+              })
+              .bindPopup(popupText[i], customOptions),
           );
         } else {
           // zero day, on affiche le(s) jour(s) précédant(s) en plus
@@ -390,16 +300,10 @@
           }
           markers.push(
             leaflet
-              .marker(
-                [
-                  Number(roadbook[i].finParcoursLat),
-                  Number(roadbook[i].finParcoursLng),
-                ],
-                {
-                  title: "Arrivée jour " + roadbook[i].dayCounter,
-                  icon: typeIcons[5],
-                }
-              )
+              .marker([Number(roadbook[i].finParcoursLat), Number(roadbook[i].finParcoursLng)], {
+                title: "Arrivée jour " + roadbook[i].dayCounter,
+                icon: typeIcons[5],
+              })
               .bindPopup(
                 popupText[tempPopupTextId] +
                   tempPopupText +
@@ -414,8 +318,8 @@
                   diffIcons +
                   "</p><p>" +
                   roadbook[i].summary +
-                  "</p>"
-              )
+                  "</p>",
+              ),
           );
         }
       }

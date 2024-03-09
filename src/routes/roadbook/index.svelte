@@ -192,6 +192,7 @@
     buttonLabel = "Update";
     //mise à jour des icones
     updateIcons();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   export async function insertRoadbook() {
@@ -450,10 +451,12 @@
         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           Jour
         </label>
+        <!-- svelte-ignore a11y-autofocus -->
         <input
           type="text"
           bind:value={editDay.dayCounter}
           class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+          autofocus
         />
       </div>
 

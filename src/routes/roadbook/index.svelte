@@ -1,10 +1,12 @@
 <script>
   import { onMount } from "svelte";
+  import { replaceText } from "$lib/synonyms";
 
   let currentRando = "";
   let randos = [];
   let roadbook = [];
   let parcours = [];
+  let thesaurus = [];
   var buttonLabel = "Add";
   var editDay = Object();
   let rupture = false;
@@ -28,6 +30,10 @@
     let res = await fetch("/MDB/randos");
     const ran = await res.json();
     randos = await ran.randos;
+    res = await fetch("/MDB/thesaurus");
+    const thes = await res.json();
+    thesaurus = await thes.thesaurus;
+
     currentRando = randos[0].rando;
     loadTables();
   });
@@ -218,6 +224,8 @@
       editDay.finParcoursLng = Number(editDay.finParcoursLng);
       editDay.stepsAnne = Number(editDay.stepsAnne);
       editDay.stepsOlivier = Number(editDay.stepsOlivier);
+      editDay.summary = replaceText(editDay.summary || "", thesaurus);
+      editDay.detail = replaceText(editDay.detail || "", thesaurus);
 
       if (buttonLabel === "Add") {
         console.info("ADD");
@@ -289,8 +297,8 @@
             roadbook[i].night = Number(editDay.night);
             roadbook[i].landscape = Number(editDay.landscape);
             roadbook[i].mood = Number(editDay.mood);
-            roadbook[i].detail = editDay.detail;
-            roadbook[i].summary = editDay.summary;
+            roadbook[i].detail = replaceText(editDay.detail, thesaurus);
+            roadbook[i].summary = replaceText(editDay.summary, thesaurus);
             roadbook[i].debutParcoursLat = Number(editDay.debutParcoursLat);
             roadbook[i].debutParcoursLng = Number(editDay.debutParcoursLng);
             roadbook[i].dist = Number(editDay.dist) || 0;

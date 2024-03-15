@@ -80,7 +80,7 @@
       }
       if (roadbook[i].dayCounter >= debutParcours && roadbook[i].dayCounter <= finParcours) {
         totalElePos += roadbook[i].elePos;
-        totalEleNeg += roadbook[i].eleNeg;
+        totalEleNeg += Number(roadbook[i].eleNeg || 0);
         NbDay++;
       }
     }

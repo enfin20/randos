@@ -31,7 +31,7 @@ export async function get(request) {
         roadbook[0].elePosCumul =  Number(roadbook[0].elePos || 0);
         roadbook[0].eleNegCumul = Number(roadbook[0].eleNeg || 0);
       }
-      console.info("Roadbook", i , roadbook[i].dayCounter, roadbook[i].distCumul, roadbook[i].dist)
+      console.info("Roadbook", i , roadbook[i].dayCounter, roadbook[i].distCumul, roadbook[i].dist, roadbook[i].eleNeg, roadbook[i].eleNegCumul)
     }
 
     return {

@@ -34,6 +34,8 @@
 
     var customOptions = {
       minWidth: "250",
+      autoPanPadding: [50, 50],
+      keepInView: true,
     };
     let diffIcons = "";
     let landscapeIcons = "";
@@ -251,7 +253,6 @@
             Number(roadbook[i].eleNegCumul).toLocaleString("fr") +
             " m</p>",
         );
-
         // on détermine si il s'agit d'un zero day
         if (roadbook[i].difficulty > 0) {
           if (roadbook[i].night <= 1) {

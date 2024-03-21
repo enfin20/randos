@@ -4,7 +4,6 @@ import { ObjectId } from "mongodb";
 export async function get(request) {
   try {
     const s = request.query.get("sort") || 1;
-    const map = request.query.get("map") || ""
     const rando = request.query.get("rando") 
     var filter = new Object()
     // spécifique pour permettre l'affichage de la carte quand le parcours n'est pas terminé

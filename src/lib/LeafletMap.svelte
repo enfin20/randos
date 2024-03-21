@@ -1,5 +1,6 @@
 <script>
   import { onMount, onDestroy } from "svelte";
+  let detail = false;
   let weatherIcon = ["Snow", "Rain", "Fog", "Wind", "Thunder", "Cloud", "SemiSun", "Sun"];
   let difficultyIcon = ["ZeroDay", "Star", "Star", "Star"];
   let starIcon = ["Ugly", "Soso", "Star", "Star", "Star"];
@@ -12,10 +13,18 @@
   let currentRando = "";
 
   onMount(async () => {
-    let res = await fetch("/MDB/randos");
-    const ran = await res.json();
-    randos = await ran.randos;
-    currentRando = randos[0].rando;
+    if (window.location.href.indexOf("detail") > 0) {
+      detail = true;
+    }
+    if (detail) {
+      let res = await fetch("/MDB/randos");
+      const ran = await res.json();
+      randos = await ran.randos;
+      currentRando = randos[0].rando;
+    } else {
+      currentRando = "GR10";
+    }
+
     loadTables();
   });
 
@@ -27,6 +36,7 @@
   });
 
   export async function loadTables() {
+    console.info("detail 2", detail);
     if (map) {
       console.log("Unloading Leaflet map.");
       map.remove();
@@ -219,40 +229,74 @@
           }
         }
         // text pour l'affichage
-        popupText.push(
-          "<p><b>Jour " +
-            roadbook[i].dayCounter +
-            " : " +
-            roadbook[i].start +
-            " / " +
-            roadbook[i].end +
-            "</b></p><p><img src='/images/" +
-            moodIcon[roadbook[i].mood] +
-            ".png' class='w-[25px] md:w-[30px] inline' />&nbsp;" +
-            "<img src='/images/" +
-            weatherIcon[roadbook[i].weather] +
-            ".png' class='w-[25px] md:w-[30px] inline' />&nbsp;&nbsp;&nbsp;" +
-            roadbook[i].dist +
-            " kms " +
-            roadbook[i].elePos +
-            " / " +
-            roadbook[i].eleNeg +
-            " m<br/>" +
-            diffIcons +
-            "<br/>" +
-            landscapeIcons +
-            "</p><p>" +
-            roadbook[i].summary +
-            "</p><p>" +
-            roadbook[i].detail +
-            "</p><p>Cumul : " +
-            Number(Math.round(roadbook[i].distCumul)).toLocaleString("fr") +
-            " kms " +
-            Number(roadbook[i].elePosCumul).toLocaleString("fr") +
-            " / " +
-            Number(roadbook[i].eleNegCumul).toLocaleString("fr") +
-            " m</p>",
-        );
+        if (detail) {
+          popupText.push(
+            "<p><b>Jour " +
+              roadbook[i].dayCounter +
+              " : " +
+              roadbook[i].start +
+              " / " +
+              roadbook[i].end +
+              "</b></p><p><img src='/images/" +
+              moodIcon[roadbook[i].mood] +
+              ".png' class='w-[25px] md:w-[30px] inline' />&nbsp;" +
+              "<img src='/images/" +
+              weatherIcon[roadbook[i].weather] +
+              ".png' class='w-[25px] md:w-[30px] inline' />&nbsp;&nbsp;&nbsp;" +
+              roadbook[i].dist +
+              " kms " +
+              roadbook[i].elePos +
+              " / " +
+              roadbook[i].eleNeg +
+              " m<br/>" +
+              diffIcons +
+              "<br/>" +
+              landscapeIcons +
+              "</p><p>" +
+              roadbook[i].summary +
+              "</p><p>" +
+              roadbook[i].detail +
+              "</p><p>Cumul : " +
+              Number(Math.round(roadbook[i].distCumul)).toLocaleString("fr") +
+              " kms " +
+              Number(roadbook[i].elePosCumul).toLocaleString("fr") +
+              " / " +
+              Number(roadbook[i].eleNegCumul).toLocaleString("fr") +
+              " m</p>",
+          );
+        } else {
+          popupText.push(
+            "<p><b>Jour " +
+              roadbook[i].dayCounter +
+              " : " +
+              roadbook[i].start +
+              " / " +
+              roadbook[i].end +
+              "<img src='/images/" +
+              weatherIcon[roadbook[i].weather] +
+              ".png' class='w-[25px] md:w-[30px] inline' />&nbsp;&nbsp;&nbsp;" +
+              roadbook[i].dist +
+              " kms " +
+              roadbook[i].elePos +
+              " / " +
+              roadbook[i].eleNeg +
+              " m<br/>" +
+              diffIcons +
+              "<br/>" +
+              landscapeIcons +
+              "</p><p>" +
+              roadbook[i].summary +
+              "</p><p>" +
+              "</p><p>Cumul : " +
+              Number(Math.round(roadbook[i].distCumul)).toLocaleString("fr") +
+              " kms " +
+              Number(roadbook[i].elePosCumul).toLocaleString("fr") +
+              " / " +
+              Number(roadbook[i].eleNegCumul).toLocaleString("fr") +
+              " m</p>",
+          );
+        }
+
         // on détermine si il s'agit d'un zero day
         if (roadbook[i].difficulty > 0) {
           if (roadbook[i].night <= 1) {

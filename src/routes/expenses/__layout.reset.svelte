@@ -5,10 +5,10 @@
   <div class="grid grid-cols-4 text-xs md:text-base bg-ht px-2 py-2 ">
     <div>
       <a
-        href="/"
+        href="/?detail"
         class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
       >
-        RD24</a
+        Roadbook</a
       >
     </div>
     <div>

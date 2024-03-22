@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from "svelte";
-  let detail = false;
+  import { getDetail } from "$lib/detail";
+  export let detail;
   let weatherIcon = ["Snow", "Rain", "Fog", "Wind", "Thunder", "Cloud", "SemiSun", "Sun"];
   let difficultyIcon = ["ZeroDay", "Star", "Star", "Star"];
   let starIcon = ["Ugly", "Soso", "Star", "Star", "Star"];
@@ -13,17 +14,11 @@
   let currentRando = "";
 
   onMount(async () => {
-    if (window.location.href.indexOf("detail") > 0) {
-      detail = true;
-    }
-    if (detail) {
-      let res = await fetch("/MDB/randos");
-      const ran = await res.json();
-      randos = await ran.randos;
-      currentRando = randos[0].rando;
-    } else {
-      currentRando = "GR10";
-    }
+    let res = await fetch("/MDB/randos");
+    const ran = await res.json();
+    randos = await ran.randos;
+    // detail = getDetail(window.location.href);
+    currentRando = randos[0].rando;
 
     loadTables();
   });
@@ -387,20 +382,21 @@
   }
 </script>
 
-<div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-  <select
-    bind:value={currentRando}
-    on:change={loadTables}
-    class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-  >
-    {#each randos as r}
-      <option value={r.rando}>
-        {r.description}
-      </option>
-    {/each}
-  </select>
-</div>
-
+{#if detail}
+  <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+    <select
+      bind:value={currentRando}
+      on:change={loadTables}
+      class=" appearance-none block w-full bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+    >
+      {#each randos as r}
+        <option value={r.rando}>
+          {r.description}
+        </option>
+      {/each}
+    </select>
+  </div>
+{/if}
 <div bind:this={mapElement} id="map" class="w-full" />
 
 <style>

@@ -1,22 +1,39 @@
 <script>
-  let detail = false;
   import { onMount } from "svelte";
+  import { getDetail } from "$lib/detail";
+  let detail = false;
   onMount(async () => {
-    if (window.location.href.indexOf("detail") > 0) {
-      detail = true;
-    }
-    console.info("nav", detail);
+    detail = getDetail(window.location.href);
   });
 </script>
 
 <nav>
-  <div class="grid grid-cols-3 text-xs md:text-base bg-ht px-2 py-2 ">
-    <div>
-      <a href="/" class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75">
-        RANDOS</a
-      >
-    </div>
-    {#if detail}
+  {#if detail}
+    <div class="grid grid-cols-4 text-xs md:text-base bg-ht px-2 py-2 ">
+      <div>
+        <a
+          href="/?detail"
+          class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
+        >
+          Roadbook</a
+        >
+      </div>
+      <div>
+        <a
+          href="/dashboard"
+          class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
+        >
+          Synthèse
+        </a>
+      </div>
+      <div>
+        <a
+          href="/map"
+          class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
+        >
+          Carte
+        </a>
+      </div>
       <div>
         <a
           href="/parcours"
@@ -25,17 +42,16 @@
           Parcours
         </a>
       </div>
-
+    </div>
+  {:else}
+    <div class="grid grid-cols-1 text-xs md:text-base bg-ht px-2 py-2 ">
       <div>
-        <a
-          href="/roadbook"
-          class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75"
-        >
-          Roadbook
+        <a href="/" class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75">
+          Suivi parcours A & O
         </a>
       </div>
-    {/if}
-  </div>
+    </div>
+  {/if}
 </nav>
 <div class="px-2 py-2">
   <div class="mb-2 text-gray-500 font-bold">

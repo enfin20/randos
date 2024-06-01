@@ -55,7 +55,7 @@
     <div class="grid grid-cols-1 text-xs md:text-base bg-ht px-2 py-2 ">
       <div>
         <a href="/" class=" px-3 py-2 flex items-center uppercase font-bold leading-snug text-white hover:opacity-75">
-          Suivi parcours A & O
+          Cham'daye 24
         </a>
       </div>
     </div>

@@ -430,7 +430,8 @@
       editDay.dist = Math.round(dayDist / 100) / 10;
       editDay.elePos = dayElePos;
       editDay.eleNeg = dayEleNeg;
-
+      editDay.finParcoursLat = parcours[parcours.length - 1].lat;
+      editDay.finParcoursLng = parcours[parcours.length - 1].lng;
       editDay.finParcours = pos - 1;
       console.info("editDay", editDay.dist, editDay.finParcours);
     };

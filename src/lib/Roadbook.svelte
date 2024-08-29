@@ -6,6 +6,15 @@
   let randos = [];
   let roadbook = [];
   let parcours = [];
+  let parcoursUploaded = false;
+  let typeParcours = [
+    { value: "Pied", label: "typeHike" },
+    { value: "Train", label: "typeTrain" },
+    { value: "Stop", label: "typeStop" },
+    { value: "Bus", label: "typeBus" },
+    { value: "Autre", label: "typeOther" },
+  ];
+  let typeParcoursSelected = typeParcours[0];
   let thesaurus = [];
   var buttonLabel = "Add";
   var editDay = Object();
@@ -21,6 +30,7 @@
   let imgNewLandscapeActivate = ["_in", "_in", "_in", "_in", "_in"];
   let moodIcon = ["Sad", "Neutral", "Happy"];
   let imgNewMoodActivate = ["_in", "_in", "_in"];
+  let imgparcoursActivate = ["_in", "_in", "_in", "_in", "_in"];
   // _in rgb(200,225,200)
 
   var previous_finParcours = 0;
@@ -48,6 +58,7 @@
   }
 
   function initEditDay() {
+    parcoursUploaded = false;
     let lastDay = 0;
     let dayId = -1;
     for (var i = 0; i < roadbook.length; i++) {
@@ -92,6 +103,7 @@
     editDay.stepsAnne = 0;
     editDay.stepsOlivier = 0;
     editDay.rupture = false;
+    editDay.type = "Pied";
     previous_finParcours = 0;
 
     parcours = [];
@@ -165,9 +177,18 @@
         imgNewMoodActivate[i] = "_in";
       }
     }
+
+    for (var i = 0; i < typeParcours.length; i++) {
+      if (typeParcoursSelected.value === typeParcours[i].value) {
+        imgparcoursActivate[i] = "";
+      } else {
+        imgparcoursActivate[i] = "_in";
+      }
+    }
   }
 
   export async function loadDay(dayCounter) {
+    parcoursUploaded = false;
     for (var i = 0; i < roadbook.length; i++) {
       if (Number(roadbook[i].dayCounter) === dayCounter) {
         editDay.day = roadbook[i].day;
@@ -366,8 +387,9 @@
           editParcours.lat = Number(data[0]);
           editParcours.lng = Number(data[1]);
           editParcours.ele = Number(Math.round(data[2]));
+          editParcours.type = typeParcoursSelected.value;
           editParcours.dayCounter = editDay.dayCounter;
-          if (counter === 0 && !editDay.rupture) {
+          if (counter === 0 && !parcoursUploaded) {
             // Premier point de la journéee, ne pas tenir compte du précédent point
             pos = 1;
             prev_ele = editParcours.ele;
@@ -376,42 +398,48 @@
             editDay.dist = 0;
             editDay.debutParcoursLat = editParcours.lat;
             editDay.debutParcoursLng = editParcours.lng;
-          } else if (counter === 0 && editDay.rupture) {
+          } else if (counter === 0 && parcoursUploaded) {
             // Premier point des chargements suivant de la même journée
             dayDist = editDay.dist * 1000;
             pos = editDay.finParcours + 1;
             prev_ele = editParcours.ele;
             editParcours.dist = 0;
             editParcours.borne = dayDist;
-            editDay.rupture = false;
             dayElePos = editDay.elePos;
             dayEleNeg = editDay.eleNeg;
           } else {
-            editParcours.dist =
-              Math.round(
-                Math.acos(
-                  Math.sin((prev_lat * pi) / 180) * Math.sin((editParcours.lat * pi) / 180) +
-                    Math.cos((prev_lat * pi) / 180) *
-                      Math.cos((editParcours.lat * pi) / 180) *
-                      Math.cos(((prev_lng - editParcours.lng) * pi) / 180),
-                ) *
-                  6371 *
-                  1000,
-              ) || 0;
-          }
-          dayDist += editParcours.dist;
-          editParcours.borne = Math.round(dayDist / 1000, 0);
-          if (editParcours.ele - prev_ele > 0) {
-            editParcours.elePos = Math.round(editParcours.ele - prev_ele);
-            editParcours.eleNeg = 0;
-          } else {
-            editParcours.eleNeg = Math.round(editParcours.ele - prev_ele);
-            editParcours.elePos = 0;
+            // distance uniquement calculée que pour la marche à pied
+            if (typeParcoursSelected.value === "Pied") {
+              editParcours.dist =
+                Math.round(
+                  Math.acos(
+                    Math.sin((prev_lat * pi) / 180) * Math.sin((editParcours.lat * pi) / 180) +
+                      Math.cos((prev_lat * pi) / 180) *
+                        Math.cos((editParcours.lat * pi) / 180) *
+                        Math.cos(((prev_lng - editParcours.lng) * pi) / 180),
+                  ) *
+                    6371 *
+                    1000,
+                ) || 0;
+            } else {
+              editParcours.dist = 0;
+              editParcours.ele = prev_ele;
+            }
+            dayDist += editParcours.dist;
+            editParcours.borne = Math.round(dayDist / 1000, 0);
+            if (editParcours.ele - prev_ele > 0) {
+              editParcours.elePos = Math.round(editParcours.ele - prev_ele);
+              editParcours.eleNeg = 0;
+            } else {
+              editParcours.eleNeg = Math.round(editParcours.ele - prev_ele);
+              editParcours.elePos = 0;
+            }
+            dayElePos += editParcours.elePos;
+            dayEleNeg += editParcours.eleNeg;
           }
 
           editParcours.pos = pos;
-          dayElePos += editParcours.elePos;
-          dayEleNeg += editParcours.eleNeg;
+
           parcours.push(editParcours);
           prev_lat = editParcours.lat;
           prev_lng = editParcours.lng;
@@ -421,11 +449,6 @@
         }
       }
       console.info("parcours", parcours.length);
-      if (rupture) {
-        parcours[parcours.length - 1].rupture = rupture;
-        editDay.rupture = rupture;
-        rupture = false;
-      }
       console.info("dayDist", dayDist, pos);
       editDay.dist = Math.round(dayDist / 100) / 10;
       editDay.elePos = dayElePos;
@@ -437,6 +460,7 @@
     };
     reader.readAsText(file);
     //
+    parcoursUploaded = true;
   }
 </script>
 
@@ -468,8 +492,29 @@
           autofocus
         />
       </div>
-
-      <div class="w-full md:w-2/3 px-3 mb-6 md:mb-0">
+      <div class="w-full md:w-1/3 px-3 mb-6 md:mb-6">
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+          Type Parcours
+        </label>
+        {#each typeParcours as tp, i}
+          <input
+            type="radio"
+            bind:group={typeParcoursSelected}
+            name="r_type"
+            value={tp}
+            id="r_type{i}"
+            class="peer hidden"
+            on:change={updateIcons}
+          />
+          <label
+            for="r_type{i}"
+            class="select-none cursor-pointer py-1 px-0 font-bold text-slate-400 transition-colors duration-200 ease-in-out"
+          >
+            <img src="/images/{tp.label}{imgparcoursActivate[i]}.png" alt="" class="w-[30px] inline" /></label
+          >
+        {/each}
+      </div>
+      <div class="w-full md:w-1/3 px-3 mb-6 md:mb-6">
         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
           trace
         </label>
@@ -480,11 +525,8 @@
           name="files"
           size="30"
           on:change={parcoursUpload}
-          class=" appearance-none w-1/2 bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-        /><label class=" appearance-none w-1/2"
-          >Rupture
-          <input type="checkbox" bind:checked={rupture} />
-        </label>
+          class=" appearance-none bg-gray-100 text-gray-600 border border-gray-100 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        />
       </div>
     </div>
     <div class=" w-full md:w-1/2 flex flex-wrap -mx-3">

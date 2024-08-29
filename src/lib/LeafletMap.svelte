@@ -81,6 +81,7 @@
     );
     const par = await res.json();
     parcours = await par.parcours;
+    let parcoursColor = "DodgerBlue";
     console.info("parcours", parcours.length);
     if (typeof window != "undefined") {
       const leaflet = await import("leaflet");
@@ -140,29 +141,49 @@
         );
 
       for (var i = 0; i < parcours.length; i++) {
-        // tracé des lignes jour par jour
+        if (parcours[i].type === undefined) {
+          parcours[i].color = "DodgerBlue";
+        } else {
+          switch (parcours[i].type) {
+            case "Pied":
+              parcours[i].color = "DodgerBlue";
+              break;
+            case "Train":
+              parcours[i].color = "Crimson";
+              break;
+            case "Stop":
+              parcours[i].color = "Chartreuse";
+              break;
+            case "Bus":
+              parcours[i].color = "DeepPink";
+              break;
+            default:
+              parcours[i].color = "black";
+          }
+        }
+        // tracé des lignes jour par jour, type par type
         if (parcours[i].dayCounter === currentDay) {
-          latlngs.push([parcours[i].lat, parcours[i].lng]);
-          if (parcours[i].rupture) {
-            // rupture dans la journée, on trace le parcours
-            leaflet.polyline(latlngs, { color: "blue" }).addTo(map);
+          if (parcours[i].color === parcoursColor && !parcours[i].rupture) {
+            latlngs.push([parcours[i].lat, parcours[i].lng]);
+          } else {
+            leaflet.polyline(latlngs, { color: parcoursColor }).addTo(map);
             // on réinitialise le parcours
             latlngs = [];
+            parcoursColor = parcours[i].color;
           }
         } else {
           // nouveau jour, on trace le parcours du jour précédent
           // on ajoute la fin d'étape
-          leaflet.polyline(latlngs, { color: "blue" }).addTo(map);
+          leaflet.polyline(latlngs, { color: parcoursColor }).addTo(map);
           // on réinitialise le parcours
           latlngs = [];
-          //          if (i > 0 && !parcours[i - 1].rupture) {
-          //            latlngs.push([parcours[i - 1].lat, parcours[i - 1].lng]);
-          //          }
+          parcoursColor = parcours[i].color;
 
           currentDay++;
         }
       }
-      leaflet.polyline(latlngs, { color: "blue" }).addTo(map);
+      // dernier élément
+      leaflet.polyline(latlngs, { color: parcours[parcours.length - 1].color }).addTo(map);
       //'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
       leaflet
         .tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
@@ -350,7 +371,7 @@
                   "<p><b>Jour " +
                   roadbook[i].dayCounter +
                   " : " +
-                  roadbook[i].start +
+                  roadbook[i].end +
                   "</b></p><p><img src='/images/" +
                   weatherIcon[roadbook[i].weather] +
                   ".png' class='w-[25px] md:w-[30px] inline' />" +

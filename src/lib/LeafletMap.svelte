@@ -197,10 +197,14 @@
       var markers = [];
 
       markers.push(
-        leaflet.marker([Number(roadbook[0].debutParcoursLat), Number(roadbook[0].debutParcoursLng)], {
-          title: "départ jour " + roadbook[0].dayCounter,
-          icon: typeIcons[iconIndex],
-        }),
+        leaflet
+          .marker([Number(roadbook[0].debutParcoursLat), Number(roadbook[0].debutParcoursLng)], {
+            icon: typeIcons[iconIndex],
+          })
+          .bindTooltip("0", {
+            permanent: true,
+            direction: "right",
+          }),
       );
 
       for (var i = 0; i < roadbook.length; i++) {
@@ -339,14 +343,17 @@
               }
             }
           }
-
           markers.push(
             leaflet
               .marker([Number(roadbook[i].finParcoursLat), Number(roadbook[i].finParcoursLng)], {
                 title: "Arrivée jour " + roadbook[i].dayCounter,
                 icon: typeIcons[iconIndex],
               })
-              .bindPopup(popupText[i], customOptions),
+              .bindPopup(popupText[i], customOptions)
+              .bindTooltip((i + 1).toString(), {
+                permanent: true,
+                direction: "left",
+              }),
           );
         } else {
           // zero day, on affiche le(s) jour(s) précédant(s) en plus
@@ -380,7 +387,11 @@
                   "</p><p>" +
                   roadbook[i].summary +
                   "</p>",
-              ),
+              )
+              .bindTooltip((i + 1).toString(), {
+                permanent: true,
+                direction: "left",
+              }),
           );
         }
       }
